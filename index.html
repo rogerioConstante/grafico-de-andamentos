@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Gráfico de Andamentos v.3</title>
+<script language="JavaScript" src="FileSaver.js"></script>
+<style>
+ canvas {
+ 		background:#dfdfbc;
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		left: 300px;
+		right: 0px;
+		margin: auto;	
+	}
+	
+table{
+	width:310px;
+	background-color:#b6b69f;
+	margin:left;
+}
+
+.table2{
+	
+	background-color:#c9ca8f;
+	text-align: center;
+}
+
+.color_display{
+	height:25px;
+	background-color:#a9aa94;
+	font: "Space Age";
+	color:#000999;
+	font-size:14px;
+	text-align:center;
+	padding:1px;
+}
+
+.color_display1{
+	height:25px;
+	background-color:#a9aa94;
+	font: "Space Age";
+	color:#000999;
+	font-size:12px;
+	text-align:center;
+	padding:1px;
+}
+
+#fileinput {
+    display:none;
+}
+
+
+.color_display2{
+	width:83px;
+	height:12px;
+	background-color:#acac82;
+	font: "Space Age";
+	color:#000999;
+	font-size:10px;
+	text-align:center;
+	padding:1px;
+}
+
+.subtitulo{
+	width:200px;
+	height:30px;
+	background-color:#b6b69f;
+	font: "Space Age";
+	color:#330033;
+	font-size:14px;
+	text-align:center;
+	padding:5px;
+}
+
+
+.botao{
+	
+	background-color:#acac82;
+	font: "Space Age";
+	color:#330033;
+	font-size:11px;
+	text-align:center;
+	
+}
+
+.botaoGr{
+	width:290px;
+	height:30px;
+	background-color:#b5b56e;
+	font: "Space Age";
+	color:#330033;
+	font-size:14px;
+	text-align:center;
+	padding:5px;
+}
+
+
+.botaoPeq1{
+	width:75px;
+	height:25px;
+	background-color:#a8a885;
+	font: "Space Age";
+	color:#330033;
+	font-size:11px;
+	text-align:center;
+	padding:1px;
+}
+
+
+
+.botaoPeq2{
+	width:58px;
+	height:25px;
+	background-color:#a8a885;
+	font: "Space Age";
+	color:#330033;
+	font-size:11px;
+	text-align:center;
+	padding:1px;
+}
+
+
+.botaoPreset{
+	width:26px;
+	height:25px;
+	background-color:#a8a885;
+	font: "Space Age";
+	color:#0016ff;
+	font-size:11px;
+	text-align:center;
+	
+}
+
+
+.botaoPreset2{
+	width:58px;
+	height:25px;
+	background-color:#4f4f2c;
+	font: "Space Age";
+	color:#bbaf3d;
+	font-size:11px;
+	text-align:center;
+	
+}
+
+
+.Preset{
+	
+	height:25px;
+	background-color:#6a6a4a;
+	font: "Space Age";
+	color:#bbaf3d;
+	font-size:14px;
+	text-align:center;
+	
+}
+
+.texto{
+	height:30px;
+	background-color:#b6b69f;
+	font: "Space Age";
+	color:#330033;
+	font-size:12px;
+	text-align:center;
+	padding:5px;
+	
+}
+
+.titulos{
+	
+	background-color:#a3a37e;
+	font: "Space Age";
+	color:#454507;
+	font-size:20px;
+	text-align:center;
+	padding:5px;
+}
+
+
+</style>
+
+</head>
+<body bgcolor="696866">
+
+<script> 
+//variaveis canvas
+var canvas, ctx, ALTURA, LARGURA;
+//variaveis input
+var andamentoP = andamentoDif = andamentoS11 = andamentoS12 =
+andamentoS21 = andamentoS22 = andamentoS31 = andamentoS32 = andamentoS41 =
+andamentoS42 = andamentoS51 = andamentoS52 = 1;
+var dA, dB, d11, d12, d21, d22, d31, d32, d41, d42, d51, d52, insereProblem, 
+teclaZ, botao1Clic = true, botao2Clic = true, botao3Clic = true, botao4Clic = true,
+botaoPlay = true, botaoAnd1 = true, botaoAnd2 = true, presetDados="", teclaShift = false,
+teclaCtrl = false, presetArray = [];
+
+var pos = {
+    x: 0,
+    y: 0
+  };
+  
+
+//variaveis grafico e caixas
+var X = -50, Y = 7, altCel = 15, largCel = 46, len, len1, 
+len2, len3, len4, len5, lens, len1s, len2s, len3s, len4s, len5s,
+i = 0, corMarcaP = "#dFdFdF", corMarca = "#FFF", corMarca0P = "#dFdFdF", corMarca0 = "#FFF", 
+corMarca1P = "#ad0100", corMarca1 = "#ff0200", corMarca2P = "#c2bb00", corMarca2 = "#fff500",
+corMarca3P = "#cc6b00", corMarca3 = "#ff8500", metro1, metro2, displayAnd1 = 0, displayAnd2 = 0,
+caixas = {
+	_cx: []
+	};
+
+//variaveis andamentos
+var aP, a1, a2, a3, a4, criadoAnd = 0, andMax = 300, andMin = 1, multiplo = 1, qtdAnd = 71, totalAnd,
+aList = {
+	_list: []	
+	},
+troca = {};
+
+
+	  
+//funções	
+
+function reconfigura() {
+	
+	i = 0;
+	X = -50;
+	Y = 7;
+	criadoAnd = 0;
+		
+	caixas = {
+	_cx: []
+	};
+	
+	aList = {
+	_list: []	
+	};
+	
+};  
+	  
+function criarCaixas() {
+		  	 
+	for (i=0;i<=criadoAnd;i++) {
+	 	
+	// posiciona as caixas em espiral
+			
+		if (i <= 16) {			
+			
+			X = X + ((largCel + 4) + 6); 	 	
+				
+		} else if (i > 16 && i <= 22){
+			
+			Y = Y + ((((altCel+2)*5)+2) + 6);
+			
+		} else if (i > 22 && i <= 38){
+			
+			X = X - ((largCel + 4) + 6);
+			
+		} else if (i > 38 && i <= 42){
+			
+			Y = Y - ((((altCel+2)*5)+2) + 6);
+			
+		} else if (i > 42 && i <= 56){
+			
+			X = X + ((largCel + 4) + 6);
+			
+		} else if (i > 56 && i <= 58){
+			
+			Y = Y + ((((altCel+2)*5)+2) + 6);
+			
+		} else if (i > 58 && i <= 72){
+			
+			X = X - ((largCel + 4) + 6);
+			
+		};
+	
+		
+		caixas._cx[i] = {
+			 
+		fundo: {	 	
+	 		x: X,
+			y: Y,
+			altura: ((altCel+2)*5)+2,
+			largura: largCel + 4,
+			cor: "#5b5d51"	
+	 		},	
+	 		
+	 	andP: {
+			x: X + 2,
+			y: Y + 2,
+			altura: altCel,
+			largura: largCel,
+			cor: "#dFdFdF",
+			valor: i	
+			},		 	
+	 	
+	 	and1: {
+			x: X + 2,
+			y: Y + 4 + altCel,
+			altura: altCel,
+			largura: largCel,
+			cor: "#FFF",
+			valor: 23.5	
+			},	
+	
+	 	and2: {
+			x: X + 2,
+			y: Y + 2+ ((altCel + 2) * 2),
+			altura: altCel,
+			largura: largCel,
+			cor: "#FFF",
+			valor: 41	
+			},	
+	
+	 	and3: {
+			x: X + 2,
+			y: Y  + 2 + ((altCel + 2) * 3),
+			altura: altCel,
+			largura: largCel,
+			cor: "#FFF",
+			valor: 47.5	
+			},	
+	
+	 	and4: {
+			x: X + 2,
+			y: Y + 2 + ((altCel + 2) * 4),
+			altura: altCel,
+			largura: largCel,
+			cor: "#FFF",
+			valor: 66
+			},	
+	
+		};
+	
+	};
+
+};
+	
+function andamentos() {
+	
+	aList._list[0] = {
+		
+		aP : andamentoP,
+		a1 : andamentoP * (andamentoS11/andamentoS12),
+		a2 : andamentoP * (andamentoS21/andamentoS22),
+		a3 : andamentoP * (andamentoS31/andamentoS32),
+		a4 : andamentoP * (andamentoS41/andamentoS42)
+	
+	};
+	
+	for (j=0;j<500;j++) {
+		
+		criadoAnd++;
+		
+		aList._list[criadoAnd] = {
+		
+			aP : aList._list[j].a1,
+			a1 : aList._list[j].a1 * (andamentoS11/andamentoS12),
+			a2 : aList._list[j].a1 * (andamentoS21/andamentoS22),
+			a3 : aList._list[j].a1 * (andamentoS31/andamentoS32),
+			a4 : aList._list[j].a1 * (andamentoS41/andamentoS42)
+		
+		};
+		
+		criadoAnd++;
+		
+		aList._list[criadoAnd] = {
+		
+			aP : aList._list[j].a2,
+			a1 : aList._list[j].a2 * (andamentoS11/andamentoS12),
+			a2 : aList._list[j].a2 * (andamentoS21/andamentoS22),
+			a3 : aList._list[j].a2 * (andamentoS31/andamentoS32),
+			a4 : aList._list[j].a2 * (andamentoS41/andamentoS42)
+		
+		};
+		
+		criadoAnd++;
+		
+		aList._list[criadoAnd] = {
+		
+			aP : aList._list[j].a3,
+			a1 : aList._list[j].a3 * (andamentoS11/andamentoS12),
+			a2 : aList._list[j].a3 * (andamentoS21/andamentoS22),
+			a3 : aList._list[j].a3 * (andamentoS31/andamentoS32),
+			a4 : aList._list[j].a3 * (andamentoS41/andamentoS42)
+		
+		};
+		
+		criadoAnd++;
+		
+		aList._list[criadoAnd] = {
+		
+			aP : aList._list[j].a4,
+			a1 : aList._list[j].a4 * (andamentoS11/andamentoS12),
+			a2 : aList._list[j].a4 * (andamentoS21/andamentoS22),
+			a3 : aList._list[j].a4 * (andamentoS31/andamentoS32),
+			a4 : aList._list[j].a4 * (andamentoS41/andamentoS42)
+		
+		};
+		
+	};
+	
+	
+	
+};			
+
+function excluiIguais() {
+	
+	for (i=1;i<=criadoAnd;i++) {
+	
+		for (j=0;j<i;j++) {
+			
+							
+			if (Math.abs((aList._list[i].aP - aList._list[j].aP)) <= andamentoDif || aList._list[i].aP > andMax || aList._list[i].aP < andMin || i >= qtdAnd) {
+				
+				aList._list.splice(i, 1);
+				
+				i--;
+				
+				criadoAnd--;
+				
+				j = i;
+				
+			};
+			
+		};
+	
+	};
+	
+	totalAnd = aList._list.length - 1;	
+	
+};
+
+function ordenar() {
+	
+	     
+    for (i=0;i<totalAnd;i++) {
+    	
+    troca[1] = aList._list[i];
+    troca[2] = aList._list[i+1];
+    
+    var a = aList._list[i].aP;
+    var b = aList._list[i+1].aP;
+    
+    
+    if (a > b) {
+		
+    aList._list.splice(i, 2, troca[2], troca[1]);
+        
+    i = -1;
+    
+    };
+    
+  };
+  	
+};
+	
+function valores() {
+	
+	for (i=0;i<=criadoAnd;i++) {	
+		
+	caixas._cx[i].andP.valor = aList._list[i].aP.toFixed(2);
+	caixas._cx[i].and1.valor = aList._list[i].a1.toFixed(2);
+	caixas._cx[i].and2.valor = aList._list[i].a2.toFixed(2);
+	caixas._cx[i].and3.valor = aList._list[i].a3.toFixed(2);
+	caixas._cx[i].and4.valor = aList._list[i].a4.toFixed(2);
+			
+	};
+	
+};
+
+	
+function desenha() {
+		
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.font = "10px Arial";
+		
+	for (i=0;i<=criadoAnd;i++) {		
+		
+		ctx.fillStyle = caixas._cx[i].fundo.cor;
+		ctx.fillRect(caixas._cx[i].fundo.x, caixas._cx[i].fundo.y, caixas._cx[i].fundo.largura, caixas._cx[i].fundo.altura);
+		ctx.fillStyle = caixas._cx[i].andP.cor;
+		ctx.fillRect(caixas._cx[i].andP.x, caixas._cx[i].andP.y, caixas._cx[i].andP.largura, caixas._cx[i].andP.altura);
+		ctx.fillStyle = caixas._cx[i].and1.cor;
+		ctx.fillRect(caixas._cx[i].and1.x, caixas._cx[i].and1.y, caixas._cx[i].and1.largura, caixas._cx[i].and1.altura);
+		ctx.fillStyle = caixas._cx[i].and2.cor;
+		ctx.fillRect(caixas._cx[i].and2.x, caixas._cx[i].and2.y, caixas._cx[i].and2.largura, caixas._cx[i].and2.altura);
+		ctx.fillStyle = caixas._cx[i].and3.cor;
+		ctx.fillRect(caixas._cx[i].and3.x, caixas._cx[i].and3.y, caixas._cx[i].and3.largura, caixas._cx[i].and3.altura);
+		ctx.fillStyle = caixas._cx[i].and4.cor;
+		ctx.fillRect(caixas._cx[i].and4.x, caixas._cx[i].and4.y, caixas._cx[i].and4.largura, caixas._cx[i].and4.altura);
+				
+		ctx.fillStyle = "#000";
+		lens = caixas._cx[i].andP.valor.toString();
+		len = lens.length;
+		ctx.fillText(lens, (caixas._cx[i].andP.x + (caixas._cx[i].andP.largura / 2)) - ((len*6)/2), caixas._cx[i].andP.y + (altCel*0.7));
+		len1s = caixas._cx[i].and1.valor.toString();
+		len1 = len1s.length;
+		ctx.fillText(len1s, (caixas._cx[i].and1.x + (caixas._cx[i].and1.largura / 2)) - ((len1*6)/2), caixas._cx[i].and1.y + (altCel*0.7));
+		len2s = caixas._cx[i].and2.valor.toString();
+		len2 = len2s.length;
+		ctx.fillText(len2s, (caixas._cx[i].and2.x + (caixas._cx[i].and2.largura / 2)) - ((len2*6)/2), caixas._cx[i].and2.y + (altCel*0.7));
+		len3s = caixas._cx[i].and3.valor.toString();
+		len3 = len3s.length;
+		ctx.fillText(len3s, (caixas._cx[i].and3.x + (caixas._cx[i].and3.largura / 2)) - ((len3*6)/2), caixas._cx[i].and3.y + (altCel*0.7));
+		len4s = caixas._cx[i].and4.valor.toString();
+		len4 = len4s.length;
+		ctx.fillText(len4s, (caixas._cx[i].and4.x + (caixas._cx[i].and4.largura / 2)) - ((len4*6)/2), caixas._cx[i].and4.y + (altCel*0.7));
+		
+		if (i >= qtdAnd-1) {
+			i = criadoAnd;
+		};	
+	};
+
+};
+
+
+function marcar() {
+	
+	for (index=0;index<=totalAnd;index++) {	
+	
+	// detecta clique
+	
+	var clicadoP =	pos.x > caixas._cx[index].andP.x && pos.x < (caixas._cx[index].andP.x + caixas._cx[index].andP.largura) 
+						&& pos.y > caixas._cx[index].andP.y && pos.y < (caixas._cx[index].andP.y + caixas._cx[index].andP.altura);
+	
+	var clicado1 =	pos.x > caixas._cx[index].and1.x && pos.x < (caixas._cx[index].and1.x + caixas._cx[index].and1.largura) 
+						&& pos.y > caixas._cx[index].and1.y && pos.y < (caixas._cx[index].and1.y + caixas._cx[index].and1.altura);
+	
+	var clicado2 =	pos.x > caixas._cx[index].and2.x && pos.x < (caixas._cx[index].and2.x + caixas._cx[index].and2.largura) 
+						&& pos.y > caixas._cx[index].and2.y && pos.y < (caixas._cx[index].and2.y + caixas._cx[index].and2.altura);
+						
+	var clicado3 =	pos.x > caixas._cx[index].and3.x && pos.x < (caixas._cx[index].and3.x + caixas._cx[index].and3.largura) 
+						&& pos.y > caixas._cx[index].and3.y && pos.y < (caixas._cx[index].and3.y + caixas._cx[index].and3.altura);
+					
+	var clicado4 =	pos.x > caixas._cx[index].and4.x && pos.x < (caixas._cx[index].and4.x + caixas._cx[index].and4.largura) 
+						&& pos.y > caixas._cx[index].and4.y && pos.y < (caixas._cx[index].and4.y + caixas._cx[index].and4.altura);
+	
+	
+	// marca andamento clicado
+	
+	if (clicadoP) {
+		
+		if (!botaoAnd1) {
+		displayAnd1 = caixas._cx[index].andP.valor;
+		};
+		if (!botaoAnd2) {
+		displayAnd2 = caixas._cx[index].andP.valor;
+		};
+				
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+				
+				if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};
+			
+			
+				};
+				
+			};
+						
+  		} else if (clicado1) {
+  			
+  		if (!botaoAnd1) {
+		displayAnd1 = caixas._cx[index].and1.valor;
+		};
+		if (!botaoAnd2) {
+		displayAnd2 = caixas._cx[index].and1.valor;
+		};
+				
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+					
+				if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};
+						
+			};
+			
+		};
+		
+  			} else if (clicado2) {
+  				
+  		if (!botaoAnd1) {
+		displayAnd1 = caixas._cx[index].and2.valor;
+		};
+		if (!botaoAnd2) {
+		displayAnd2 = caixas._cx[index].and2.valor;
+		};
+		
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+				
+			if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};	
+				
+			};
+			
+		};		
+		
+  			} else if (clicado3) {
+		
+		if (!botaoAnd1) {
+		displayAnd1 = caixas._cx[index].and3.valor;
+		};
+		if (!botaoAnd2) {
+		displayAnd2 = caixas._cx[index].and3.valor;
+		};
+		
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+				
+				if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};
+				
+			};	
+			
+		};	
+		
+  			} else if (clicado4) {
+  				
+  		if (!botaoAnd1) {
+		displayAnd1 = caixas._cx[index].and4.valor;
+		};
+		if (!botaoAnd2) {
+		displayAnd2 = caixas._cx[index].and4.valor;
+		};
+				
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+				
+				if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};
+				
+			};
+			
+		};		
+		
+  	};
+	
+	};
+	
+	desenha();
+	
+	document.getElementById("display5.1").value = displayAnd1;
+	document.getElementById("display5.2").value = displayAnd2;
+	document.getElementById("display6.1").value = Math.round(60000 / displayAnd1);
+	document.getElementById("display6.2").value = Math.round(60000 / displayAnd2);
+	
+};
+
+function marcarCaixa() {
+	
+	for (index=0;index<=totalAnd;index++) {	
+	
+	// detecta cliqueduplo
+	
+	var duploClicado =	pos.x > caixas._cx[index].fundo.x && pos.x < (caixas._cx[index].fundo.x + caixas._cx[index].fundo.largura) 
+								&& pos.y > caixas._cx[index].fundo.y && pos.y < (caixas._cx[index].fundo.y + caixas._cx[index].fundo.altura);
+	
+		
+	// marca andamento clicado
+	
+	if (duploClicado) {
+				
+			for (i=0;i<=totalAnd;i++) {
+				
+				for (j=0; j<5;j++) {
+					switch(j) {
+						case 0: multiplo = 0.25;
+							break;
+						case 1: multiplo = 0.5;
+							break;
+						case 2: multiplo = 1;
+							break;
+						case 3: multiplo = 2;
+							break;
+						case 4: multiplo = 4;
+							break;
+					};
+					
+									
+					if (!botao3Clic) {
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
+					};
+				};
+				
+				if (!botao4Clic) {
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
+						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
+						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
+						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
+						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
+						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
+						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
+						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
+						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
+						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
+						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
+						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
+						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
+						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
+						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
+						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
+						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
+					};
+					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
+						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
+						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
+						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
+						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
+					};
+				};
+				
+				};
+				
+			};
+								
+		};		
+		
+  	};
+	
+	desenha();
+	
+	};
+
+
+
+function main() {
+		ALTURA = 660;
+		LARGURA = 958;
+		canvas = document.createElement("canvas");
+		canvas.width = LARGURA;
+		canvas.height = ALTURA;
+		canvas.style.border = "2px solid #000123";   
+		
+		ctx = canvas.getContext("2d");
+		
+		document.body.appendChild(canvas);
+		
+		
+			
+		
+	};
+
+main();
+
+</script>
+
+
+<table width="200px" border="5px">
+  <tr>    
+    <td colspan="8" class="titulos">Gráfico de Andamentos v.3</td>
+  </tr>
+  <tr>
+    <td colspan="7" class="subtitulo">Andamento principal</td>
+    <td colspan="1" align="center"><input type="text" class="color_display1" id="displayA" size="2"></td>
+  </tr>
+   <tr>
+    <td colspan="7" class="subtitulo">Diferença máxima entre andamentos iguais</td>
+    <td colspan="1" align="center"><input type="text" class="color_display1" id="displayB" size="2"></td>
+  </tr>
+  	 <tr>
+    <td colspan="8" class="subtitulo">Proporções</td>
+  </tr>
+   <tr>
+    <td colspan="6" class="texto">Andamento secundário 1</td>
+    <td colspan="1"><input type="text" class="color_display" id="display1.1" size="1"></td>
+    <td colspan="1"><input type="text" class="color_display" id="display1.2" size="1"></td>
+  </tr>
+  <tr>
+    <td colspan="6" class="texto">Andamento secundário 2</td>
+    <td colspan="1"><input type="text" class="color_display" id="display2.1" size="1"></td>
+    <td colspan="1"><input type="text" class="color_display" id="display2.2" size="1"></td>
+  </tr>
+  <tr>
+    <td colspan="6" class="texto">Andamento secundário 3</td>
+    <td colspan="1"><input type="text" class="color_display" id="display3.1" size="1"></td>
+    <td colspan="1"><input type="text" class="color_display" id="display3.2" size="1"></td>
+  </tr>
+  <tr>
+    <td colspan="6" class="texto">Andamento secundário 4</td>
+    <td colspan="1"><input type="text" class="color_display" id="display4.1" size="1"></td>
+    <td colspan="1"><input type="text" class="color_display" id="display4.2" size="1"></td>
+  </tr>
+  </tr>
+  <tr>
+    <td colspan="8" align="center"><button type="button" id="botao" class="botaoGr" onclick = "iniGrafico()">Gerar gráfico</td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><button type="button" id="botao1" class="botaoPeq1" onclick = cliqueOrdenar(this)>Ordenar</td>
+    <td colspan="3" align="center"><button type="button" id="botao2" class="botaoPeq1" >xxx</td>
+    <td colspan="2" align="center"><button type="button" id="botao3" class="botaoPeq2" onclick = cliqueMarca1(this)>Marca 1</td>
+    <td colspan="1" align="center"><button type="button" id="botao4" class="botaoPeq2" onclick = cliqueMarca2(this)>Marca 2</td>
+  </tr>
+</table>
+<table width="200px" border="6px" bgcolor="#e3e4be">
+ <tr>
+  <td class="table2"><button type="button" id="botao5" class="botao" onclick = cliquePlay(this)>Play</td>
+  <td class="table2"><button type="button" id="botao6" class="botao" onclick = cliqueAnd1(this)>Andamento 1</td>
+  <td class="table2"><button type="button" id="botao7" class="botao" onclick = cliqueAnd2(this)>Andamento 2</td
+ </tr>
+  <tr>
+   <td class="table2"><font face="Space Age" size=2>M.M.</font></td>
+   <td class="table2"><input type="text" class="color_display2" id="display5.1" size="1"></td>
+   <td class="table2"><input type="text" class="color_display2" id="display5.2" size="1"></td>
+  </tr>
+  <tr>
+   <td class="table2"><font face="Space Age" size=2>msec.</font></td>
+   <td class="table2"><input type="text" class="color_display2" id="display6.1" size="1"></td>
+   <td class="table2"><input type="text" class="color_display2" id="display6.2" size="1"></td>
+  </tr>
+  </tr>
+</table>
+<table border="1px">
+  <tr class = "Preset">
+    <td colspan = 2 align="center"><input type="file" id="fileinput">
+    									 <input type="button" class="botaoPreset2" onclick="document.getElementById('fileinput').click()" value="Abrir"/></td>
+    <td colspan = 4 class = "Preset">Presets</td>
+    <td colspan = 2 align="center"><button type="button" id="btPreSave" class="botaoPreset2" onclick = salvarArquivo()>Salvar</td>
+  </tr>
+  <tr class = "Preset">
+ 	 <td align="center"><button type="button" id="btPreset1" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(1)">1</td>
+    <td align="center"><button type="button" id="btPreset2" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(2)">2</td>
+    <td align="center"><button type="button" id="btPreset3" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(3)">3</td>
+    <td align="center"><button type="button" id="btPreset4" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(4)">4</td>
+    <td align="center"><button type="button" id="btPreset5" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(5)">5</td>
+    <td align="center"><button type="button" id="btPreset6" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(6)">6</td>
+    <td align="center"><button type="button" id="btPreset7" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(7)">7</td>
+    <td align="center"><button type="button" id="btPreset8" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(8)">8</td>
+   </tr>
+   <tr class = "Preset">
+ 	 <td align="center"><button type="button" id="btPreset9" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(9)">9</td>
+    <td align="center"><button type="button" id="btPreset10" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(10)">10</td>
+    <td align="center"><button type="button" id="btPreset11" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(11)">11</td>
+    <td align="center"><button type="button" id="btPreset12" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(12)">12</td>
+    <td align="center"><button type="button" id="btPreset13" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(13)">13</td>
+    <td align="center"><button type="button" id="btPreset14" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(14)">14</td>
+    <td align="center"><button type="button" id="btPreset15" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(15)">15</td>
+    <td align="center"><button type="button" id="btPreset16" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(16)">16</td>
+   </tr>
+</table>
+<table border rules = "rows">
+   <tr bgcolor="#6a6a4a">
+    <td class = "Preset">por </td>
+    <td><th class = "Preset">Rogério Tavares Constante</td>
+  </tr>
+</table>
+
+<script>
+
+document.getElementById("displayA").value=andamentoP;
+document.getElementById("displayB").value=andamentoDif;
+document.getElementById("display1.1").value=andamentoS11;
+document.getElementById("display1.2").value=andamentoS12;
+document.getElementById("display2.1").value=andamentoS21;
+document.getElementById("display2.2").value=andamentoS22;
+document.getElementById("display3.1").value=andamentoS31;
+document.getElementById("display3.2").value=andamentoS32;
+document.getElementById("display4.1").value=andamentoS41;
+document.getElementById("display4.2").value=andamentoS42;
+
+
+// Função que guarda os valores inseridos, verifica se há problema nos dados inseridos e inicia o gráfico
+function iniGrafico() {
+	
+	insereProblem = false;	
+	
+	//Andamento principal	
+	dA = parseFloat(document.getElementById("displayA").value);	
+	  if (dA > 0) {
+	andamentoP = dA;
+	} else {
+     	insereProblem = true;
+     };
+	document.getElementById("displayA").value=andamentoP;
+	
+	//Diferença entre andamentos
+	dB = parseFloat(document.getElementById("displayB").value);
+	  if (dB > 0) {
+   andamentoDif = dB;
+     } else {
+     	insereProblem = true;
+     };
+   document.getElementById("displayB").value=andamentoDif;
+   
+   //Andamento secundário 1 1
+   d11 = parseFloat(document.getElementById("display1.1").value);
+     if (d11 > 0) {
+   andamentoS11 = d11;
+   } else {
+     	insereProblem = true;
+     };
+   document.getElementById("display1.1").value=andamentoS11;
+   
+   //Andamento secundário 1 2
+   d12 = parseInt(document.getElementById("display1.2").value);
+     if (d12 > 0) {
+   andamentoS12 = d12;
+   } else {
+     	insereProblem = true;
+     };
+   document.getElementById("display1.2").value=andamentoS12;
+   
+   //Andamento secundário 2 1
+   d21 = parseInt(document.getElementById("display2.1").value);
+   if (d21 > 0) {
+   andamentoS21 = d21;
+    } else {
+     	insereProblem = true;
+     };
+   document.getElementById("display2.1").value=andamentoS21;
+   
+   //Andamento secundário 2 2
+   d22 = parseInt(document.getElementById("display2.2").value);
+    if (d22 > 0) {
+   andamentoS22 = d22;
+   } else {
+     	insereProblem = true;
+     };
+   document.getElementById("display2.2").value=andamentoS22;
+   
+   //Andamento secundário 3 1
+   d31 = parseInt(document.getElementById("display3.1").value);
+     if (d31 > 0) { 
+   andamentoS31 = d31;
+   } else {
+     	insereProblem = true;
+     };
+   document.getElementById("display3.1").value=andamentoS31;
+   
+   //Andamento secundário 3 2
+   d32 = parseInt(document.getElementById("display3.2").value);
+     if (d32 > 0) {
+   andamentoS32 = d32;
+   } else {
+     insereProblem = true;
+     };
+   document.getElementById("display3.2").value=andamentoS32;
+   
+   //Andamento secundário 4 1
+   d41 = parseInt(document.getElementById("display4.1").value);
+     if (d41 > 0) {
+   andamentoS41 = d41;
+   } else {
+     insereProblem = true;
+     };
+   document.getElementById("display4.1").value=andamentoS41;
+   
+   //Andamento secundário 4 2
+   d42 = parseInt(document.getElementById("display4.2").value);
+     if (d42 > 0) {
+   andamentoS42 = d42;
+   } else {
+     insereProblem = true;
+     };
+   document.getElementById("display4.2").value=andamentoS42;
+   
+    
+	if (insereProblem == false) {  
+	   
+	   reconfigura();
+	   andamentos();
+	   excluiIguais();
+	   criarCaixas();
+		
+		if (!botao1Clic) {		
+			ordenar();
+		};
+		valores();
+	   desenha();
+	   
+	   		
+	} else {
+		alert("Problema! \nVerifique os dados!")
+   };
+
+};
+
+// detecta o click do usuário.
+
+function clique(evt) {
+  
+  var rectNav = canvas.getBoundingClientRect(); 
+  
+  //obtêm as coordenadas do mouse na janela do cliente.
+  pos = {
+    x: evt.clientX - rectNav.left,
+    y: evt.clientY - rectNav.top
+  };
+ 
+ marcar(); 
+
+};
+
+
+function cliqueDuplo(evt) {
+  
+  var rectNav = canvas.getBoundingClientRect(); 
+  
+  //obtêm as coordenadas do mouse na janela do cliente.
+  pos = {
+    x: evt.clientX - rectNav.left,
+    y: evt.clientY - rectNav.top
+  };
+ 
+ marcarCaixa(); 
+
+};
+
+function cliqueOrdenar(nome) {
+	
+	if (botao1Clic) {
+		nome.style.backgroundColor = "#8a9933" ;
+		botao1Clic = false;
+		
+	} else {
+		
+		nome.style.backgroundColor = "#a8a885";
+		botao1Clic = true;	
+	};
+
+
+};
+
+
+function cliqueMarca1(nome) {
+	
+	if (botao3Clic) {
+		nome.style.backgroundColor = "#8a9933" ;
+		botao3Clic = false;
+		corMarcaP = corMarca1P;
+		corMarca = corMarca1;
+		document.getElementById("botao4").style.backgroundColor = "#a8a885";
+		botao4Clic = true;
+	
+	} else {
+		
+		nome.style.backgroundColor = "#a8a885";
+		botao3Clic = true;
+					
+	};
+
+};
+
+
+function cliqueMarca2(nome) {
+	
+	if (botao4Clic) {
+		nome.style.backgroundColor = "#8a9933" ;
+		botao4Clic = false;
+		corMarcaP = corMarca2P;
+		corMarca = corMarca2;
+		document.getElementById("botao3").style.backgroundColor = "#a8a885";
+		botao3Clic = true;
+	
+	} else {
+		
+		nome.style.backgroundColor = "#a8a885";
+		botao4Clic = true;
+		corMarcaP = corMarca1P;
+		corMarca = corMarca1;
+			
+	};
+
+};
+
+function cliquePlay(nome) {
+	
+	audio1 = new Audio();
+	audio1.src = "audio/block1.wav";
+	
+	audio2 = new Audio();
+	audio2.src = "audio/block2.wav";
+	
+	if (botaoPlay) {
+		nome.style.backgroundColor = "#8a9933";
+		play();			
+		botaoPlay = false;
+				
+	} else {
+		nome.style.backgroundColor = "#a8a885";
+		play();		
+		botaoPlay = true;
+		
+		};
+
+};
+
+function play() {
+	if (botaoPlay) {
+		if (botaoAnd1 == false && botaoAnd2 == false && displayAnd1 > 1 && displayAnd2 > 1) {
+			
+			metro1 = setInterval(function() {
+				audio1.play();
+				} ,(60000/displayAnd1));
+							
+			metro2 = setInterval(function() {
+				audio2.play();	
+			} ,(60000/displayAnd2));
+		
+		} else if (botaoAnd1 == true && botaoAnd2 == false && displayAnd2 > 1) {
+		
+			metro2 = setInterval(function() {
+				audio2.play();	
+			} ,(60000/displayAnd2));
+			
+		} else if (botaoAnd1 == false && botaoAnd2 == true && displayAnd1 > 1) {
+		
+			metro1 = setInterval(function() {
+				audio1.play();
+			} ,(60000/displayAnd1));
+		
+		};
+		
+	} else {
+	
+		clearInterval(metro1);
+		clearInterval(metro2);
+		
+	};	
+
+};
+
+function cliqueAnd1(nome) {
+	
+	if (botaoAnd1) {
+		nome.style.backgroundColor = "#8a9933";
+		botaoAnd1 = false;
+	} else {
+		nome.style.backgroundColor = "#a8a885";
+		botaoAnd1 = true;
+		};
+
+};
+
+function cliqueAnd2(nome) {
+	
+	if (botaoAnd2) {
+		nome.style.backgroundColor = "#8a9933";
+		botaoAnd2 = false;
+	} else {
+		nome.style.backgroundColor = "#a8a885";
+		botaoAnd2 = true;
+		};
+
+};
+
+
+function isKeyPressed(event) {
+	
+    if (event.shiftKey) {
+        teclaShift = true;
+        teclaCtrl = false;
+    } else if (event.ctrlKey) {
+        teclaCtrl = true;
+        teclaShift = false;
+    } else {
+        teclaShift = false;
+        teclaCtrl = false;
+    };
+    
+}
+
+function salvarPresets(preset) {
+	
+		var nomeBt = "btPreset" + preset;	
+			
+		if (teclaShift) { // se shift+click botãoPreset, salva dados do preset na variável presetArray
+	
+		document.getElementById(nomeBt).style.backgroundColor = "#e8f036";
+		
+		presetArray[preset] = [];
+		
+		presetArray[preset][0] = preset; 
+		presetArray[preset][1] = document.getElementById("displayA").value;
+		presetArray[preset][2] = document.getElementById("displayB").value;
+		presetArray[preset][3] = document.getElementById("display1.1").value;
+		presetArray[preset][4] = document.getElementById("display1.2").value;
+		presetArray[preset][5] = document.getElementById("display2.1").value;
+		presetArray[preset][6] = document.getElementById("display2.2").value;
+		presetArray[preset][7] = document.getElementById("display3.1").value;
+		presetArray[preset][8] = document.getElementById("display3.2").value;
+		presetArray[preset][9] = document.getElementById("display4.1").value;
+		presetArray[preset][10] = document.getElementById("display4.2").value;
+				
+		} else if (teclaCtrl) {
+			
+			if (presetArray[preset]) {			
+				presetArray.splice(preset, 1, ""); 
+				};
+				
+				document.getElementById(nomeBt).style.backgroundColor = "#b1bcb5";
+			
+			};
+		
+		
+		if (presetArray[preset] && !teclaCtrl && !teclaShift) { // se existe um preset salvo, para o botão clicado, mostra os dados na tabela
+			
+			mostraDados(preset);
+
+			};
+		
+		if (!presetArray[preset] && !teclaCtrl && !teclaShift) {
+			
+			alert("Preset vazio ou não salvo!\nSalve os presets atuais e/ou\nabra um arquivo válido de presets.")
+			
+			};
+};
+
+function mostraDados(preset) {
+	
+			document.getElementById("displayA").value = presetArray[preset][1];
+			document.getElementById("displayB").value = presetArray[preset][2];
+			document.getElementById("display1.1").value = presetArray[preset][3]; 
+			document.getElementById("display1.2").value = presetArray[preset][4];
+			document.getElementById("display2.1").value = presetArray[preset][5];
+			document.getElementById("display2.2").value = presetArray[preset][6];
+			document.getElementById("display3.1").value = presetArray[preset][7];
+			document.getElementById("display3.2").value = presetArray[preset][8];
+			document.getElementById("display4.1").value = presetArray[preset][9];
+			document.getElementById("display4.2").value = presetArray[preset][10];
+			};
+
+function salvarArquivo() {
+	
+	
+	// cria string com presets
+     		
+     	presetDados = ""; 
+     		
+     	for (i=1;i<=16;i++) { // loop para concatenar linhas da string de presets
+			
+			var presetStr = "";     		
+			
+			if (presetArray[i]) {     		
+     		
+     			for (j=0;j<=10;j++) {      // loop para concatenar elementos de cada preset em uma linha da string
+     			
+     				presetStr =  presetStr + presetArray[i][j].toString() + " ";   	
+     			
+        		};
+        	
+        presetDados = presetDados + presetStr + "\n";
+        
+        	};
+         		
+      };
+	 	
+	 	var blob = new Blob([presetDados], {type: "text/plain;charset=utf-8"});
+		var nome = prompt("nome do arquivo");
+		saveAs(blob, nome + ".and");
+	
+};
+
+  function readSingleFile(evt) {
+  console.log(evt)
+    //Retrieve the first (and only!) File from the FileList object
+    var f = evt.target.files[0]; 
+
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+	      var contents = e.target.result;
+         var setArray = contents.split("\n"); // separa presets
+         setArray.splice(setArray.length-1, 1);
+      
+      for (i=0;i<setArray.length;i++) {
+      	
+      	setArray[i] = setArray[i].split(" "); // separa elementos
+      	if ((setArray[i].length-1) == "") {
+				
+				  setArray[i].pop();    		
+      		
+      		}
+      	
+      	var indicePreset = setArray[i][0];
+      	presetArray[indicePreset] = setArray[i];  
+			
+      	};
+      
+      // exclui presets com mesmo índice
+        
+      for (i=(setArray.length - 1);i>=1;i--) {
+		
+			for (j=(i-1);j>=0;j--) {
+				
+				indicePreset = setArray[i][0];
+				
+				var indice2Preset = setArray[j][0];
+				var subtrai = presetArray[indicePreset][0] - presetArray[indice2Preset][0];
+			
+				if (subtrai == 0) {
+				
+					presetArray.splice(indice2Preset, 1); 
+				
+					i--;
+				
+					j = i - 1;
+				
+				};
+			
+			};
+		};
+		
+		for (i=1;i<=16;i++) {  // apaga cores dos botões
+			
+			var nomeBt = "btPreset" + i;			
+         document.getElementById(nomeBt).style.backgroundColor = "#a8a885";	
+			
+			};		
+		
+     	for (i=0;i<setArray.length;i++) {  //colore os botões com preset
+     		
+     		var nomeBt = "btPreset" + setArray[i][0];			
+         document.getElementById(nomeBt).style.backgroundColor = "#a5b741";			
+         			
+     		};
+     		
+     	// cria string com presets
+     		
+     	presetDados = ""; 
+     		
+     	for (i=0;i<setArray.length;i++) { // loop para concatenar linhas da string de presets
+			
+			indicePreset = setArray[i][0];
+			var presetStr = "";     		
+     		
+     		for (j=0;j<=10;j++) {      // loop para concatenar elementos de cada preset em uma linha da string
+     			presetStr =  presetStr + presetArray[indicePreset][j].toString() + " ";   	
+        	};
+        	
+         presetDados = presetDados + presetStr + "\n";
+         		
+         };
+      
+      }
+      r.readAsText(f);
+    } else { 
+      alert("Falha ao ler arquivo");
+    }
+  }
+
+  document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+
+// escuta cliques
+canvas.addEventListener("click", clique);
+canvas.addEventListener("dblclick", cliqueDuplo);
+
+
+
+</script>
+
+
+</body>
+</html>
