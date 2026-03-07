@@ -1,2011 +1,1384 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<title>Gráfico de Andamentos v.3</title>
-<script language="JavaScript" src="FileSaver.js"></script>
-<style>
- canvas {
- 		background:#dfdfbc;
-		position: absolute;
-		top: 0px;
-		bottom: 0px;
-		left: 300px;
-		right: 0px;
-		margin: auto;	
-	}
-	
-table{
-	width:310px;
-	background-color:#b6b69f;
-	margin:left;
-}
-
-.table2{
-	
-	background-color:#c9ca8f;
-	text-align: center;
-}
-
-.color_display{
-	height:25px;
-	background-color:#a9aa94;
-	font: "Space Age";
-	color:#000999;
-	font-size:14px;
-	text-align:center;
-	padding:1px;
-}
-
-.color_display1{
-	height:25px;
-	background-color:#a9aa94;
-	font: "Space Age";
-	color:#000999;
-	font-size:12px;
-	text-align:center;
-	padding:1px;
-}
-
-#fileinput {
-    display:none;
-}
-
-
-.color_display2{
-	width:83px;
-	height:12px;
-	background-color:#acac82;
-	font: "Space Age";
-	color:#000999;
-	font-size:10px;
-	text-align:center;
-	padding:1px;
-}
-
-.subtitulo{
-	width:200px;
-	height:30px;
-	background-color:#b6b69f;
-	font: "Space Age";
-	color:#330033;
-	font-size:14px;
-	text-align:center;
-	padding:5px;
-}
-
-
-.botao{
-	
-	background-color:#acac82;
-	font: "Space Age";
-	color:#330033;
-	font-size:11px;
-	text-align:center;
-	
-}
-
-.botaoGr{
-	width:290px;
-	height:30px;
-	background-color:#b5b56e;
-	font: "Space Age";
-	color:#330033;
-	font-size:14px;
-	text-align:center;
-	padding:5px;
-}
-
-
-.botaoPeq1{
-	width:75px;
-	height:25px;
-	background-color:#a8a885;
-	font: "Space Age";
-	color:#330033;
-	font-size:11px;
-	text-align:center;
-	padding:1px;
-}
-
-
-
-.botaoPeq2{
-	width:58px;
-	height:25px;
-	background-color:#a8a885;
-	font: "Space Age";
-	color:#330033;
-	font-size:11px;
-	text-align:center;
-	padding:1px;
-}
-
-
-.botaoPreset{
-	width:26px;
-	height:25px;
-	background-color:#a8a885;
-	font: "Space Age";
-	color:#0016ff;
-	font-size:11px;
-	text-align:center;
-	
-}
-
-
-.botaoPreset2{
-	width:58px;
-	height:25px;
-	background-color:#4f4f2c;
-	font: "Space Age";
-	color:#bbaf3d;
-	font-size:11px;
-	text-align:center;
-	
-}
-
-
-.Preset{
-	
-	height:25px;
-	background-color:#6a6a4a;
-	font: "Space Age";
-	color:#bbaf3d;
-	font-size:14px;
-	text-align:center;
-	
-}
-
-.texto{
-	height:30px;
-	background-color:#b6b69f;
-	font: "Space Age";
-	color:#330033;
-	font-size:12px;
-	text-align:center;
-	padding:5px;
-	
-}
-
-.titulos{
-	
-	background-color:#a3a37e;
-	font: "Space Age";
-	color:#454507;
-	font-size:20px;
-	text-align:center;
-	padding:5px;
-}
-
-
-</style>
-
-</head>
-<body bgcolor="696866">
-
-<script> 
-//variaveis canvas
-var canvas, ctx, ALTURA, LARGURA;
-//variaveis input
-var andamentoP = andamentoDif = andamentoS11 = andamentoS12 =
-andamentoS21 = andamentoS22 = andamentoS31 = andamentoS32 = andamentoS41 =
-andamentoS42 = andamentoS51 = andamentoS52 = 1;
-var dA, dB, d11, d12, d21, d22, d31, d32, d41, d42, d51, d52, insereProblem, 
-teclaZ, botao1Clic = true, botao2Clic = true, botao3Clic = true, botao4Clic = true,
-botaoPlay = true, botaoAnd1 = true, botaoAnd2 = true, presetDados="", teclaShift = false,
-teclaCtrl = false, presetArray = [];
-
-var pos = {
-    x: 0,
-    y: 0
-  };
-  
-
-//variaveis grafico e caixas
-var X = -50, Y = 7, altCel = 15, largCel = 46, len, len1, 
-len2, len3, len4, len5, lens, len1s, len2s, len3s, len4s, len5s,
-i = 0, corMarcaP = "#dFdFdF", corMarca = "#FFF", corMarca0P = "#dFdFdF", corMarca0 = "#FFF", 
-corMarca1P = "#ad0100", corMarca1 = "#ff0200", corMarca2P = "#c2bb00", corMarca2 = "#fff500",
-corMarca3P = "#cc6b00", corMarca3 = "#ff8500", metro1, metro2, displayAnd1 = 0, displayAnd2 = 0,
-caixas = {
-	_cx: []
-	};
-
-//variaveis andamentos
-var aP, a1, a2, a3, a4, criadoAnd = 0, andMax = 300, andMin = 1, multiplo = 1, qtdAnd = 71, totalAnd,
-aList = {
-	_list: []	
-	},
-troca = {};
-
-
-	  
-//funções	
-
-function reconfigura() {
-	
-	i = 0;
-	X = -50;
-	Y = 7;
-	criadoAnd = 0;
-		
-	caixas = {
-	_cx: []
-	};
-	
-	aList = {
-	_list: []	
-	};
-	
-};  
-	  
-function criarCaixas() {
-		  	 
-	for (i=0;i<=criadoAnd;i++) {
-	 	
-	// posiciona as caixas em espiral
-			
-		if (i <= 16) {			
-			
-			X = X + ((largCel + 4) + 6); 	 	
-				
-		} else if (i > 16 && i <= 22){
-			
-			Y = Y + ((((altCel+2)*5)+2) + 6);
-			
-		} else if (i > 22 && i <= 38){
-			
-			X = X - ((largCel + 4) + 6);
-			
-		} else if (i > 38 && i <= 42){
-			
-			Y = Y - ((((altCel+2)*5)+2) + 6);
-			
-		} else if (i > 42 && i <= 56){
-			
-			X = X + ((largCel + 4) + 6);
-			
-		} else if (i > 56 && i <= 58){
-			
-			Y = Y + ((((altCel+2)*5)+2) + 6);
-			
-		} else if (i > 58 && i <= 72){
-			
-			X = X - ((largCel + 4) + 6);
-			
-		};
-	
-		
-		caixas._cx[i] = {
-			 
-		fundo: {	 	
-	 		x: X,
-			y: Y,
-			altura: ((altCel+2)*5)+2,
-			largura: largCel + 4,
-			cor: "#5b5d51"	
-	 		},	
-	 		
-	 	andP: {
-			x: X + 2,
-			y: Y + 2,
-			altura: altCel,
-			largura: largCel,
-			cor: "#dFdFdF",
-			valor: i	
-			},		 	
-	 	
-	 	and1: {
-			x: X + 2,
-			y: Y + 4 + altCel,
-			altura: altCel,
-			largura: largCel,
-			cor: "#FFF",
-			valor: 23.5	
-			},	
-	
-	 	and2: {
-			x: X + 2,
-			y: Y + 2+ ((altCel + 2) * 2),
-			altura: altCel,
-			largura: largCel,
-			cor: "#FFF",
-			valor: 41	
-			},	
-	
-	 	and3: {
-			x: X + 2,
-			y: Y  + 2 + ((altCel + 2) * 3),
-			altura: altCel,
-			largura: largCel,
-			cor: "#FFF",
-			valor: 47.5	
-			},	
-	
-	 	and4: {
-			x: X + 2,
-			y: Y + 2 + ((altCel + 2) * 4),
-			altura: altCel,
-			largura: largCel,
-			cor: "#FFF",
-			valor: 66
-			},	
-	
-		};
-	
-	};
-
-};
-	
-function andamentos() {
-	
-	aList._list[0] = {
-		
-		aP : andamentoP,
-		a1 : andamentoP * (andamentoS11/andamentoS12),
-		a2 : andamentoP * (andamentoS21/andamentoS22),
-		a3 : andamentoP * (andamentoS31/andamentoS32),
-		a4 : andamentoP * (andamentoS41/andamentoS42)
-	
-	};
-	
-	for (j=0;j<500;j++) {
-		
-		criadoAnd++;
-		
-		aList._list[criadoAnd] = {
-		
-			aP : aList._list[j].a1,
-			a1 : aList._list[j].a1 * (andamentoS11/andamentoS12),
-			a2 : aList._list[j].a1 * (andamentoS21/andamentoS22),
-			a3 : aList._list[j].a1 * (andamentoS31/andamentoS32),
-			a4 : aList._list[j].a1 * (andamentoS41/andamentoS42)
-		
-		};
-		
-		criadoAnd++;
-		
-		aList._list[criadoAnd] = {
-		
-			aP : aList._list[j].a2,
-			a1 : aList._list[j].a2 * (andamentoS11/andamentoS12),
-			a2 : aList._list[j].a2 * (andamentoS21/andamentoS22),
-			a3 : aList._list[j].a2 * (andamentoS31/andamentoS32),
-			a4 : aList._list[j].a2 * (andamentoS41/andamentoS42)
-		
-		};
-		
-		criadoAnd++;
-		
-		aList._list[criadoAnd] = {
-		
-			aP : aList._list[j].a3,
-			a1 : aList._list[j].a3 * (andamentoS11/andamentoS12),
-			a2 : aList._list[j].a3 * (andamentoS21/andamentoS22),
-			a3 : aList._list[j].a3 * (andamentoS31/andamentoS32),
-			a4 : aList._list[j].a3 * (andamentoS41/andamentoS42)
-		
-		};
-		
-		criadoAnd++;
-		
-		aList._list[criadoAnd] = {
-		
-			aP : aList._list[j].a4,
-			a1 : aList._list[j].a4 * (andamentoS11/andamentoS12),
-			a2 : aList._list[j].a4 * (andamentoS21/andamentoS22),
-			a3 : aList._list[j].a4 * (andamentoS31/andamentoS32),
-			a4 : aList._list[j].a4 * (andamentoS41/andamentoS42)
-		
-		};
-		
-	};
-	
-	
-	
-};			
-
-function excluiIguais() {
-	
-	for (i=1;i<=criadoAnd;i++) {
-	
-		for (j=0;j<i;j++) {
-			
-							
-			if (Math.abs((aList._list[i].aP - aList._list[j].aP)) <= andamentoDif || aList._list[i].aP > andMax || aList._list[i].aP < andMin || i >= qtdAnd) {
-				
-				aList._list.splice(i, 1);
-				
-				i--;
-				
-				criadoAnd--;
-				
-				j = i;
-				
-			};
-			
-		};
-	
-	};
-	
-	totalAnd = aList._list.length - 1;	
-	
-};
-
-function ordenar() {
-	
-	     
-    for (i=0;i<totalAnd;i++) {
-    	
-    troca[1] = aList._list[i];
-    troca[2] = aList._list[i+1];
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Andamentos v.4.2</title>
     
-    var a = aList._list[i].aP;
-    var b = aList._list[i+1].aP;
+    <!-- FileSaver local -->
+    <script src="FileSaver.js"></script>
     
-    
-    if (a > b) {
-		
-    aList._list.splice(i, 2, troca[2], troca[1]);
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #0B0A1A;
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar com scroll */
+        .sidebar {
+            width: 380px;
+            background: rgba(26, 26, 46, 0.98);
+            border-right: 1px solid rgba(157, 122, 210, 0.2);
+            padding: 24px 20px;
+            overflow-y: auto;
+            color: #E0D9F0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+            z-index: 10;
+            height: 100vh;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #1A1A2E;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #6D5B9A;
+            border-radius: 4px;
+        }
+
+        h2 {
+            color: #9F7AEA;
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
         
-    i = -1;
+        h3 {
+            color: #9F7AEA;
+            margin: 20px 0 15px 0;
+            font-weight: 500;
+            border-bottom: 1px solid #3D2A5F;
+            padding-bottom: 8px;
+        }
+
+        .card {
+            background: rgba(36, 36, 63, 0.9);
+            border: 1px solid rgba(157, 122, 210, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+
+        .input-group label {
+            width: 120px;
+            font-size: 13px;
+            color: #A59EC0;
+        }
+
+        .input-group input {
+            background: #2D2B55;
+            border: 1px solid #4A3F70;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #E0D9F0;
+            font-size: 14px;
+            width: 100px;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #9F7AEA;
+            box-shadow: 0 0 0 2px rgba(159, 122, 234, 0.3);
+        }
+
+        .proporcoes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .proporcao-item {
+            background: #24243F;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #6D5B9A;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .proporcao-item .titulo {
+            font-size: 13px;
+            color: #A59EC0;
+            width: 100px;
+        }
+
+        .proporcao-item .inputs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .proporcao-item .inputs input {
+            width: 70px;
+            background: #2D2B55;
+            border: 1px solid #4A3F70;
+            border-radius: 6px;
+            padding: 8px;
+            color: #E0D9F0;
+        }
+
+        .proporcao-item span {
+            color: #9F7AEA;
+            font-weight: bold;
+        }
+
+        .button {
+            background: #2D2B55;
+            border: 1px solid #6D5B9A;
+            color: #E0D9F0;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: none;
+        }
+
+        .button:hover {
+            background: #4A3F70;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .button.primary {
+            background: #6B4F9F;
+        }
+
+        .button.primary:hover {
+            background: #7D62B5;
+        }
+
+        .button.active {
+            background: #6B4F9F;
+            color: #FFFFFF;
+            box-shadow: 0 0 10px #6B4F9F;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .button-group .button {
+            flex: 1;
+        }
+
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .preset-btn {
+            background: #2D2B55;
+            border: 1px solid #4A3F70;
+            color: #A59EC0;
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: #4A3F70;
+            color: #E0D9F0;
+        }
+
+        .preset-btn.active {
+            background: #6B4F9F;
+            border-color: #9F7AEA;
+            color: #FFFFFF;
+            box-shadow: 0 0 10px #6B4F9F;
+        }
+
+        .metronome-display {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metronome-item {
+            text-align: center;
+            flex: 1;
+            background: #2D2B55;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .metronome-item input {
+            width: 100%;
+            background: #1A1A2E;
+            border: 1px solid #4A3F70;
+            border-radius: 6px;
+            padding: 8px;
+            color: #E0D9F0;
+            text-align: center;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .tooltip-hint {
+            font-size: 11px;
+            color: #6D5B9A;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Canvas area */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #0B0A1A;
+            cursor: grab;
+        }
+
+        .canvas-container:active {
+            cursor: grabbing;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            background: #0B0A1A;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .controls-overlay {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 40;
+        }
+
+        .coord-display {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #6D5B9A;
+            font-size: 12px;
+            background: rgba(26,26,46,0.9);
+            padding: 6px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            z-index: 40;
+            border: 1px solid #3D2A5F;
+        }
+        
+        .legenda {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26,26,46,0.95);
+            border: 1px solid #3D2A5F;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: #E0D9F0;
+            font-size: 12px;
+            z-index: 30;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0;
+        }
+        
+        .legenda-cor {
+            width: 24px;
+            height: 4px;
+            border-radius: 2px;
+        }
+        
+        .file-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .file-input-wrapper .button {
+            flex: 1;
+        }
+        
+        #fileinput {
+            display: none;
+        }
+        
+        .zoom-button {
+            width: 45px;
+            height: 45px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid #3D2A5F;
+            color: #E0D9F0;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .zoom-button:hover {
+            background: #4A3F70;
+            transform: translateY(-1px);
+        }
+
+        .marcador {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .marcador.um {
+            background-color: #331e2f;
+        }
+
+        .marcador.dois {
+            background-color: #0e3c4f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Gráfico de Andamentos v.4.2</h2>
+    <p style="font-size:12px; color:#A59EC0; margin-bottom:20px;">Rogério Tavares Constante • (c)2026</p>
     
-    };
+    <div class="card">
+        <div class="input-group">
+            <label>Andamento Principal</label>
+            <input type="number" id="displayA" value="60" step="0.1" min="1">
+        </div>
+        <div class="input-group">
+            <label>Diferença Máx.</label>
+            <input type="number" id="displayB" value="0.1" step="0.01" min="0.01">
+        </div>
+    </div>
     
-  };
-  	
-};
-	
-function valores() {
-	
-	for (i=0;i<=criadoAnd;i++) {	
-		
-	caixas._cx[i].andP.valor = aList._list[i].aP.toFixed(2);
-	caixas._cx[i].and1.valor = aList._list[i].a1.toFixed(2);
-	caixas._cx[i].and2.valor = aList._list[i].a2.toFixed(2);
-	caixas._cx[i].and3.valor = aList._list[i].a3.toFixed(2);
-	caixas._cx[i].and4.valor = aList._list[i].a4.toFixed(2);
-			
-	};
-	
-};
+    <h3>Proporções</h3>
+    <div class="proporcoes-grid">
+        <div class="proporcao-item">
+            <span class="titulo">Secundário 1</span>
+            <div class="inputs">
+                <input type="number" id="display1.1" value="2" step="0.1" min="0.1">
+                <span>:</span>
+                <input type="number" id="display1.2" value="1" step="0.1" min="0.1">
+            </div>
+        </div>
+        <div class="proporcao-item">
+            <span class="titulo">Secundário 2</span>
+            <div class="inputs">
+                <input type="number" id="display2.1" value="3" step="0.1" min="0.1">
+                <span>:</span>
+                <input type="number" id="display2.2" value="2" step="0.1" min="0.1">
+            </div>
+        </div>
+        <div class="proporcao-item">
+            <span class="titulo">Secundário 3</span>
+            <div class="inputs">
+                <input type="number" id="display3.1" value="5" step="0.1" min="0.1">
+                <span>:</span>
+                <input type="number" id="display3.2" value="4" step="0.1" min="0.1">
+            </div>
+        </div>
+        <div class="proporcao-item">
+            <span class="titulo">Secundário 4</span>
+            <div class="inputs">
+                <input type="number" id="display4.1" value="7" step="0.1" min="0.1">
+                <span>:</span>
+                <input type="number" id="display4.2" value="4" step="0.1" min="0.1">
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-group">
+        <button class="button primary" onclick="iniGrafico()">🕸️ Gerar Gráfico</button>
+        <button class="button" onclick="toggleOrdenar(this)" id="btnOrdenar">↕️ Ordenar</button>
+    </div>
+    
+    <div class="button-group">
+        <button class="button" id="botao3" onclick="toggleMarca1(this)">
+            <span class="marcador um"></span> Marca 1</button>
+        <button class="button" id="botao4" onclick="toggleMarca2(this)">
+            <span class="marcador dois"></span> Marca 2</button>
+        <button class="button" onclick="limparTodasMarcacoes()">🧹 Apagar</button>
+    </div>
+    
+    <h3>🎛️ Metrônomo Estéreo</h3>
+    <div class="card">
+        <div class="button-group">
+            <button class="button" id="botao5" onclick="togglePlay(this)">▶️ Play</button>
+            <button class="button" id="botao6" onclick="toggleAnd1(this)">🎧 And. 1</button>
+            <button class="button" id="botao7" onclick="toggleAnd2(this)">🎧 And. 2</button>
+        </div>
+        
+        <div class="metronome-display">
+            <div class="metronome-item">
+                <div style="font-size:12px;">MM 1</div>
+                <input type="text" id="display5.1" readonly value="0">
+                <div style="font-size:10px; color:#9F7AEA;">ms</div>
+                <input type="text" id="display6.1" readonly value="0">
+            </div>
+            <div class="metronome-item">
+                <div style="font-size:12px;">MM 2</div>
+                <input type="text" id="display5.2" readonly value="0">
+                <div style="font-size:10px; color:#9F7AEA;">ms</div>
+                <input type="text" id="display6.2" readonly value="0">
+            </div>
+        </div>
+    </div>
+    
+    <h3>💾 Presets</h3>
+    <div class="card">
+        <div class="file-input-wrapper">
+            <button class="button" onclick="document.getElementById('fileinput').click()">📂 Abrir</button>
+            <input type="file" id="fileinput" accept=".and">
+            <button class="button" onclick="salvarArquivo()">💾 Salvar</button>
+        </div>
+        
+        <div class="presets-grid">
+            <button class="preset-btn" id="btPreset1" onmousedown="isKeyPressed(event)" onclick="salvarPresets(1)">1</button>
+            <button class="preset-btn" id="btPreset2" onmousedown="isKeyPressed(event)" onclick="salvarPresets(2)">2</button>
+            <button class="preset-btn" id="btPreset3" onmousedown="isKeyPressed(event)" onclick="salvarPresets(3)">3</button>
+            <button class="preset-btn" id="btPreset4" onmousedown="isKeyPressed(event)" onclick="salvarPresets(4)">4</button>
+            <button class="preset-btn" id="btPreset5" onmousedown="isKeyPressed(event)" onclick="salvarPresets(5)">5</button>
+            <button class="preset-btn" id="btPreset6" onmousedown="isKeyPressed(event)" onclick="salvarPresets(6)">6</button>
+            <button class="preset-btn" id="btPreset7" onmousedown="isKeyPressed(event)" onclick="salvarPresets(7)">7</button>
+            <button class="preset-btn" id="btPreset8" onmousedown="isKeyPressed(event)" onclick="salvarPresets(8)">8</button>
+            <button class="preset-btn" id="btPreset9" onmousedown="isKeyPressed(event)" onclick="salvarPresets(9)">9</button>
+            <button class="preset-btn" id="btPreset10" onmousedown="isKeyPressed(event)" onclick="salvarPresets(10)">10</button>
+            <button class="preset-btn" id="btPreset11" onmousedown="isKeyPressed(event)" onclick="salvarPresets(11)">11</button>
+            <button class="preset-btn" id="btPreset12" onmousedown="isKeyPressed(event)" onclick="salvarPresets(12)">12</button>
+            <button class="preset-btn" id="btPreset13" onmousedown="isKeyPressed(event)" onclick="salvarPresets(13)">13</button>
+            <button class="preset-btn" id="btPreset14" onmousedown="isKeyPressed(event)" onclick="salvarPresets(14)">14</button>
+            <button class="preset-btn" id="btPreset15" onmousedown="isKeyPressed(event)" onclick="salvarPresets(15)">15</button>
+            <button class="preset-btn" id="btPreset16" onmousedown="isKeyPressed(event)" onclick="salvarPresets(16)">16</button>
+        </div>
+        
+        <div class="tooltip-hint">
+            ⚡ Shift + clique: salvar | Ctrl + clique: limpar
+        </div>
+    </div>
+    
+    <div style="font-size:11px; color:#4A3F70; text-align:center; margin-top:10px;">
+        Rogério Tavares Constante • v.4.2
+    </div>
+</div>
 
-	
-function desenha() {
-		
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.font = "10px Arial";
-		
-	for (i=0;i<=criadoAnd;i++) {		
-		
-		ctx.fillStyle = caixas._cx[i].fundo.cor;
-		ctx.fillRect(caixas._cx[i].fundo.x, caixas._cx[i].fundo.y, caixas._cx[i].fundo.largura, caixas._cx[i].fundo.altura);
-		ctx.fillStyle = caixas._cx[i].andP.cor;
-		ctx.fillRect(caixas._cx[i].andP.x, caixas._cx[i].andP.y, caixas._cx[i].andP.largura, caixas._cx[i].andP.altura);
-		ctx.fillStyle = caixas._cx[i].and1.cor;
-		ctx.fillRect(caixas._cx[i].and1.x, caixas._cx[i].and1.y, caixas._cx[i].and1.largura, caixas._cx[i].and1.altura);
-		ctx.fillStyle = caixas._cx[i].and2.cor;
-		ctx.fillRect(caixas._cx[i].and2.x, caixas._cx[i].and2.y, caixas._cx[i].and2.largura, caixas._cx[i].and2.altura);
-		ctx.fillStyle = caixas._cx[i].and3.cor;
-		ctx.fillRect(caixas._cx[i].and3.x, caixas._cx[i].and3.y, caixas._cx[i].and3.largura, caixas._cx[i].and3.altura);
-		ctx.fillStyle = caixas._cx[i].and4.cor;
-		ctx.fillRect(caixas._cx[i].and4.x, caixas._cx[i].and4.y, caixas._cx[i].and4.largura, caixas._cx[i].and4.altura);
-				
-		ctx.fillStyle = "#000";
-		lens = caixas._cx[i].andP.valor.toString();
-		len = lens.length;
-		ctx.fillText(lens, (caixas._cx[i].andP.x + (caixas._cx[i].andP.largura / 2)) - ((len*6)/2), caixas._cx[i].andP.y + (altCel*0.7));
-		len1s = caixas._cx[i].and1.valor.toString();
-		len1 = len1s.length;
-		ctx.fillText(len1s, (caixas._cx[i].and1.x + (caixas._cx[i].and1.largura / 2)) - ((len1*6)/2), caixas._cx[i].and1.y + (altCel*0.7));
-		len2s = caixas._cx[i].and2.valor.toString();
-		len2 = len2s.length;
-		ctx.fillText(len2s, (caixas._cx[i].and2.x + (caixas._cx[i].and2.largura / 2)) - ((len2*6)/2), caixas._cx[i].and2.y + (altCel*0.7));
-		len3s = caixas._cx[i].and3.valor.toString();
-		len3 = len3s.length;
-		ctx.fillText(len3s, (caixas._cx[i].and3.x + (caixas._cx[i].and3.largura / 2)) - ((len3*6)/2), caixas._cx[i].and3.y + (altCel*0.7));
-		len4s = caixas._cx[i].and4.valor.toString();
-		len4 = len4s.length;
-		ctx.fillText(len4s, (caixas._cx[i].and4.x + (caixas._cx[i].and4.largura / 2)) - ((len4*6)/2), caixas._cx[i].and4.y + (altCel*0.7));
-		
-		if (i >= qtdAnd-1) {
-			i = criadoAnd;
-		};	
-	};
-
-};
-
-
-function marcar() {
-	
-	for (index=0;index<=totalAnd;index++) {	
-	
-	// detecta clique
-	
-	var clicadoP =	pos.x > caixas._cx[index].andP.x && pos.x < (caixas._cx[index].andP.x + caixas._cx[index].andP.largura) 
-						&& pos.y > caixas._cx[index].andP.y && pos.y < (caixas._cx[index].andP.y + caixas._cx[index].andP.altura);
-	
-	var clicado1 =	pos.x > caixas._cx[index].and1.x && pos.x < (caixas._cx[index].and1.x + caixas._cx[index].and1.largura) 
-						&& pos.y > caixas._cx[index].and1.y && pos.y < (caixas._cx[index].and1.y + caixas._cx[index].and1.altura);
-	
-	var clicado2 =	pos.x > caixas._cx[index].and2.x && pos.x < (caixas._cx[index].and2.x + caixas._cx[index].and2.largura) 
-						&& pos.y > caixas._cx[index].and2.y && pos.y < (caixas._cx[index].and2.y + caixas._cx[index].and2.altura);
-						
-	var clicado3 =	pos.x > caixas._cx[index].and3.x && pos.x < (caixas._cx[index].and3.x + caixas._cx[index].and3.largura) 
-						&& pos.y > caixas._cx[index].and3.y && pos.y < (caixas._cx[index].and3.y + caixas._cx[index].and3.altura);
-					
-	var clicado4 =	pos.x > caixas._cx[index].and4.x && pos.x < (caixas._cx[index].and4.x + caixas._cx[index].and4.largura) 
-						&& pos.y > caixas._cx[index].and4.y && pos.y < (caixas._cx[index].and4.y + caixas._cx[index].and4.altura);
-	
-	
-	// marca andamento clicado
-	
-	if (clicadoP) {
-		
-		if (!botaoAnd1) {
-		displayAnd1 = caixas._cx[index].andP.valor;
-		};
-		if (!botaoAnd2) {
-		displayAnd2 = caixas._cx[index].andP.valor;
-		};
-				
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-				
-				if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};
-			
-			
-				};
-				
-			};
-						
-  		} else if (clicado1) {
-  			
-  		if (!botaoAnd1) {
-		displayAnd1 = caixas._cx[index].and1.valor;
-		};
-		if (!botaoAnd2) {
-		displayAnd2 = caixas._cx[index].and1.valor;
-		};
-				
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-					
-				if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};
-						
-			};
-			
-		};
-		
-  			} else if (clicado2) {
-  				
-  		if (!botaoAnd1) {
-		displayAnd1 = caixas._cx[index].and2.valor;
-		};
-		if (!botaoAnd2) {
-		displayAnd2 = caixas._cx[index].and2.valor;
-		};
-		
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-				
-			if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};	
-				
-			};
-			
-		};		
-		
-  			} else if (clicado3) {
-		
-		if (!botaoAnd1) {
-		displayAnd1 = caixas._cx[index].and3.valor;
-		};
-		if (!botaoAnd2) {
-		displayAnd2 = caixas._cx[index].and3.valor;
-		};
-		
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-				
-				if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};
-				
-			};	
-			
-		};	
-		
-  			} else if (clicado4) {
-  				
-  		if (!botaoAnd1) {
-		displayAnd1 = caixas._cx[index].and4.valor;
-		};
-		if (!botaoAnd2) {
-		displayAnd2 = caixas._cx[index].and4.valor;
-		};
-				
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-				
-				if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};
-				
-			};
-			
-		};		
-		
-  	};
-	
-	};
-	
-	desenha();
-	
-	document.getElementById("display5.1").value = displayAnd1;
-	document.getElementById("display5.2").value = displayAnd2;
-	document.getElementById("display6.1").value = Math.round(60000 / displayAnd1);
-	document.getElementById("display6.2").value = Math.round(60000 / displayAnd2);
-	
-};
-
-function marcarCaixa() {
-	
-	for (index=0;index<=totalAnd;index++) {	
-	
-	// detecta cliqueduplo
-	
-	var duploClicado =	pos.x > caixas._cx[index].fundo.x && pos.x < (caixas._cx[index].fundo.x + caixas._cx[index].fundo.largura) 
-								&& pos.y > caixas._cx[index].fundo.y && pos.y < (caixas._cx[index].fundo.y + caixas._cx[index].fundo.altura);
-	
-		
-	// marca andamento clicado
-	
-	if (duploClicado) {
-				
-			for (i=0;i<=totalAnd;i++) {
-				
-				for (j=0; j<5;j++) {
-					switch(j) {
-						case 0: multiplo = 0.25;
-							break;
-						case 1: multiplo = 0.5;
-							break;
-						case 2: multiplo = 1;
-							break;
-						case 3: multiplo = 2;
-							break;
-						case 4: multiplo = 4;
-							break;
-					};
-					
-									
-					if (!botao3Clic) {
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca1P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca0P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca3P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca2P };
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca1 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca0 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca3 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca2 };					
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca1 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca0 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca3 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca1 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca0 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca3 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca2 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca1 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca0 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca3 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca2 };	
-					};
-				};
-				
-				if (!botao4Clic) {
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].andP.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and1.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and2.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and3.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].andP.valor) <= andamentoDif) {
-						if (caixas._cx[i].andP.cor == corMarca0P) { caixas._cx[i].andP.cor = corMarca2P } else 
-						if (caixas._cx[i].andP.cor == corMarca1P) { caixas._cx[i].andP.cor = corMarca3P } else					
-						if (caixas._cx[i].andP.cor == corMarca2P) { caixas._cx[i].andP.cor = corMarca0P } else	
-						if (caixas._cx[i].andP.cor == corMarca3P) { caixas._cx[i].andP.cor = corMarca1P };
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and1.valor) <= andamentoDif) {
-						if (caixas._cx[i].and1.cor == corMarca0) { caixas._cx[i].and1.cor = corMarca2 } else 
-						if (caixas._cx[i].and1.cor == corMarca1) { caixas._cx[i].and1.cor = corMarca3 } else					
-						if (caixas._cx[i].and1.cor == corMarca2) { caixas._cx[i].and1.cor = corMarca0 } else	
-						if (caixas._cx[i].and1.cor == corMarca3) { caixas._cx[i].and1.cor = corMarca1 };					
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and2.valor) <= andamentoDif) {
-						if (caixas._cx[i].and2.cor == corMarca0) { caixas._cx[i].and2.cor = corMarca2 } else 
-						if (caixas._cx[i].and2.cor == corMarca1) { caixas._cx[i].and2.cor = corMarca3 } else					
-						if (caixas._cx[i].and2.cor == corMarca2) { caixas._cx[i].and2.cor = corMarca0 } else	
-						if (caixas._cx[i].and2.cor == corMarca3) { caixas._cx[i].and2.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and3.valor) <= andamentoDif) {
-						if (caixas._cx[i].and3.cor == corMarca0) { caixas._cx[i].and3.cor = corMarca2 } else 
-						if (caixas._cx[i].and3.cor == corMarca1) { caixas._cx[i].and3.cor = corMarca3 } else					
-						if (caixas._cx[i].and3.cor == corMarca2) { caixas._cx[i].and3.cor = corMarca0 } else	
-						if (caixas._cx[i].and3.cor == corMarca3) { caixas._cx[i].and3.cor = corMarca1 };	
-					};
-					if (Math.abs((caixas._cx[index].and4.valor * multiplo) - caixas._cx[i].and4.valor) <= andamentoDif) {
-						if (caixas._cx[i].and4.cor == corMarca0) { caixas._cx[i].and4.cor = corMarca2 } else 
-						if (caixas._cx[i].and4.cor == corMarca1) { caixas._cx[i].and4.cor = corMarca3 } else					
-						if (caixas._cx[i].and4.cor == corMarca2) { caixas._cx[i].and4.cor = corMarca0 } else	
-						if (caixas._cx[i].and4.cor == corMarca3) { caixas._cx[i].and4.cor = corMarca1 };	
-					};
-				};
-				
-				};
-				
-			};
-								
-		};		
-		
-  	};
-	
-	desenha();
-	
-	};
-
-
-
-function main() {
-		ALTURA = 660;
-		LARGURA = 958;
-		canvas = document.createElement("canvas");
-		canvas.width = LARGURA;
-		canvas.height = ALTURA;
-		canvas.style.border = "2px solid #000123";   
-		
-		ctx = canvas.getContext("2d");
-		
-		document.body.appendChild(canvas);
-		
-		
-			
-		
-	};
-
-main();
-
-</script>
-
-
-<table width="200px" border="5px">
-  <tr>    
-    <td colspan="8" class="titulos">Gráfico de Andamentos v.3</td>
-  </tr>
-  <tr>
-    <td colspan="7" class="subtitulo">Andamento principal</td>
-    <td colspan="1" align="center"><input type="text" class="color_display1" id="displayA" size="2"></td>
-  </tr>
-   <tr>
-    <td colspan="7" class="subtitulo">Diferença máxima entre andamentos iguais</td>
-    <td colspan="1" align="center"><input type="text" class="color_display1" id="displayB" size="2"></td>
-  </tr>
-  	 <tr>
-    <td colspan="8" class="subtitulo">Proporções</td>
-  </tr>
-   <tr>
-    <td colspan="6" class="texto">Andamento secundário 1</td>
-    <td colspan="1"><input type="text" class="color_display" id="display1.1" size="1"></td>
-    <td colspan="1"><input type="text" class="color_display" id="display1.2" size="1"></td>
-  </tr>
-  <tr>
-    <td colspan="6" class="texto">Andamento secundário 2</td>
-    <td colspan="1"><input type="text" class="color_display" id="display2.1" size="1"></td>
-    <td colspan="1"><input type="text" class="color_display" id="display2.2" size="1"></td>
-  </tr>
-  <tr>
-    <td colspan="6" class="texto">Andamento secundário 3</td>
-    <td colspan="1"><input type="text" class="color_display" id="display3.1" size="1"></td>
-    <td colspan="1"><input type="text" class="color_display" id="display3.2" size="1"></td>
-  </tr>
-  <tr>
-    <td colspan="6" class="texto">Andamento secundário 4</td>
-    <td colspan="1"><input type="text" class="color_display" id="display4.1" size="1"></td>
-    <td colspan="1"><input type="text" class="color_display" id="display4.2" size="1"></td>
-  </tr>
-  </tr>
-  <tr>
-    <td colspan="8" align="center"><button type="button" id="botao" class="botaoGr" onclick = "iniGrafico()">Gerar gráfico</td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><button type="button" id="botao1" class="botaoPeq1" onclick = cliqueOrdenar(this)>Ordenar</td>
-    <td colspan="3" align="center"><button type="button" id="botao2" class="botaoPeq1" >xxx</td>
-    <td colspan="2" align="center"><button type="button" id="botao3" class="botaoPeq2" onclick = cliqueMarca1(this)>Marca 1</td>
-    <td colspan="1" align="center"><button type="button" id="botao4" class="botaoPeq2" onclick = cliqueMarca2(this)>Marca 2</td>
-  </tr>
-</table>
-<table width="200px" border="6px" bgcolor="#e3e4be">
- <tr>
-  <td class="table2"><button type="button" id="botao5" class="botao" onclick = cliquePlay(this)>Play</td>
-  <td class="table2"><button type="button" id="botao6" class="botao" onclick = cliqueAnd1(this)>Andamento 1</td>
-  <td class="table2"><button type="button" id="botao7" class="botao" onclick = cliqueAnd2(this)>Andamento 2</td
- </tr>
-  <tr>
-   <td class="table2"><font face="Space Age" size=2>M.M.</font></td>
-   <td class="table2"><input type="text" class="color_display2" id="display5.1" size="1"></td>
-   <td class="table2"><input type="text" class="color_display2" id="display5.2" size="1"></td>
-  </tr>
-  <tr>
-   <td class="table2"><font face="Space Age" size=2>msec.</font></td>
-   <td class="table2"><input type="text" class="color_display2" id="display6.1" size="1"></td>
-   <td class="table2"><input type="text" class="color_display2" id="display6.2" size="1"></td>
-  </tr>
-  </tr>
-</table>
-<table border="1px">
-  <tr class = "Preset">
-    <td colspan = 2 align="center"><input type="file" id="fileinput">
-    									 <input type="button" class="botaoPreset2" onclick="document.getElementById('fileinput').click()" value="Abrir"/></td>
-    <td colspan = 4 class = "Preset">Presets</td>
-    <td colspan = 2 align="center"><button type="button" id="btPreSave" class="botaoPreset2" onclick = salvarArquivo()>Salvar</td>
-  </tr>
-  <tr class = "Preset">
- 	 <td align="center"><button type="button" id="btPreset1" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(1)">1</td>
-    <td align="center"><button type="button" id="btPreset2" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(2)">2</td>
-    <td align="center"><button type="button" id="btPreset3" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(3)">3</td>
-    <td align="center"><button type="button" id="btPreset4" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(4)">4</td>
-    <td align="center"><button type="button" id="btPreset5" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(5)">5</td>
-    <td align="center"><button type="button" id="btPreset6" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(6)">6</td>
-    <td align="center"><button type="button" id="btPreset7" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(7)">7</td>
-    <td align="center"><button type="button" id="btPreset8" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(8)">8</td>
-   </tr>
-   <tr class = "Preset">
- 	 <td align="center"><button type="button" id="btPreset9" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(9)">9</td>
-    <td align="center"><button type="button" id="btPreset10" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(10)">10</td>
-    <td align="center"><button type="button" id="btPreset11" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(11)">11</td>
-    <td align="center"><button type="button" id="btPreset12" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(12)">12</td>
-    <td align="center"><button type="button" id="btPreset13" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(13)">13</td>
-    <td align="center"><button type="button" id="btPreset14" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(14)">14</td>
-    <td align="center"><button type="button" id="btPreset15" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(15)">15</td>
-    <td align="center"><button type="button" id="btPreset16" class="botaoPreset" onmousedown = isKeyPressed(event) onclick = "salvarPresets(16)">16</td>
-   </tr>
-</table>
-<table border rules = "rows">
-   <tr bgcolor="#6a6a4a">
-    <td class = "Preset">por </td>
-    <td><th class = "Preset">Rogério Tavares Constante</td>
-  </tr>
-</table>
+<div class="canvas-container" id="canvasContainer">
+    <canvas id="mainCanvas"></canvas>
+    
+    <div class="legenda" id="legenda">
+        <div style="font-weight:bold; margin-bottom:8px;">Conexões</div>
+        <div class="legenda-item">
+            <div class="legenda-cor" style="background:#ea7ad4;"></div>
+            <span>1 relação</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor" style="background:#ea7ac1;"></div>
+            <span>2 relações</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor" style="background:#ea7aae;"></div>
+            <span>3 relações</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor" style="background:#ea7a9c;"></div>
+            <span>4 relações</span>
+        </div>
+        <div class="legenda-item">
+            <div class="legenda-cor" style="background:#ea7a89;"></div>
+            <span>5 relações</span>
+        </div>
+    </div>
+    
+    <div class="coord-display" id="coordDisplay">
+        🔍 Arraste | Scroll: zoom
+    </div>
+    
+    <div class="controls-overlay">
+        <button class="zoom-button" onclick="zoomIn()">+</button>
+        <button class="zoom-button" onclick="zoomOut()">−</button>
+        <button class="zoom-button" onclick="resetView()">⟲</button>
+    </div>
+</div>
 
 <script>
-
-document.getElementById("displayA").value=andamentoP;
-document.getElementById("displayB").value=andamentoDif;
-document.getElementById("display1.1").value=andamentoS11;
-document.getElementById("display1.2").value=andamentoS12;
-document.getElementById("display2.1").value=andamentoS21;
-document.getElementById("display2.2").value=andamentoS22;
-document.getElementById("display3.1").value=andamentoS31;
-document.getElementById("display3.2").value=andamentoS32;
-document.getElementById("display4.1").value=andamentoS41;
-document.getElementById("display4.2").value=andamentoS42;
-
-
-// Função que guarda os valores inseridos, verifica se há problema nos dados inseridos e inicia o gráfico
-function iniGrafico() {
-	
-	insereProblem = false;	
-	
-	//Andamento principal	
-	dA = parseFloat(document.getElementById("displayA").value);	
-	  if (dA > 0) {
-	andamentoP = dA;
-	} else {
-     	insereProblem = true;
-     };
-	document.getElementById("displayA").value=andamentoP;
-	
-	//Diferença entre andamentos
-	dB = parseFloat(document.getElementById("displayB").value);
-	  if (dB > 0) {
-   andamentoDif = dB;
-     } else {
-     	insereProblem = true;
-     };
-   document.getElementById("displayB").value=andamentoDif;
-   
-   //Andamento secundário 1 1
-   d11 = parseFloat(document.getElementById("display1.1").value);
-     if (d11 > 0) {
-   andamentoS11 = d11;
-   } else {
-     	insereProblem = true;
-     };
-   document.getElementById("display1.1").value=andamentoS11;
-   
-   //Andamento secundário 1 2
-   d12 = parseInt(document.getElementById("display1.2").value);
-     if (d12 > 0) {
-   andamentoS12 = d12;
-   } else {
-     	insereProblem = true;
-     };
-   document.getElementById("display1.2").value=andamentoS12;
-   
-   //Andamento secundário 2 1
-   d21 = parseInt(document.getElementById("display2.1").value);
-   if (d21 > 0) {
-   andamentoS21 = d21;
-    } else {
-     	insereProblem = true;
-     };
-   document.getElementById("display2.1").value=andamentoS21;
-   
-   //Andamento secundário 2 2
-   d22 = parseInt(document.getElementById("display2.2").value);
-    if (d22 > 0) {
-   andamentoS22 = d22;
-   } else {
-     	insereProblem = true;
-     };
-   document.getElementById("display2.2").value=andamentoS22;
-   
-   //Andamento secundário 3 1
-   d31 = parseInt(document.getElementById("display3.1").value);
-     if (d31 > 0) { 
-   andamentoS31 = d31;
-   } else {
-     	insereProblem = true;
-     };
-   document.getElementById("display3.1").value=andamentoS31;
-   
-   //Andamento secundário 3 2
-   d32 = parseInt(document.getElementById("display3.2").value);
-     if (d32 > 0) {
-   andamentoS32 = d32;
-   } else {
-     insereProblem = true;
-     };
-   document.getElementById("display3.2").value=andamentoS32;
-   
-   //Andamento secundário 4 1
-   d41 = parseInt(document.getElementById("display4.1").value);
-     if (d41 > 0) {
-   andamentoS41 = d41;
-   } else {
-     insereProblem = true;
-     };
-   document.getElementById("display4.1").value=andamentoS41;
-   
-   //Andamento secundário 4 2
-   d42 = parseInt(document.getElementById("display4.2").value);
-     if (d42 > 0) {
-   andamentoS42 = d42;
-   } else {
-     insereProblem = true;
-     };
-   document.getElementById("display4.2").value=andamentoS42;
-   
+    // ==================== VARIÁVEIS GLOBAIS ====================
+    let canvas, ctx, container;
+    let ALTURA = 2000, LARGURA = 2000;
+    let offsetX = 0, offsetY = 0;
+    let scale = 0.45;
+    let isDragging = false;
+    let dragStartX, dragStartY;
     
-	if (insereProblem == false) {  
-	   
-	   reconfigura();
-	   andamentos();
-	   excluiIguais();
-	   criarCaixas();
-		
-		if (!botao1Clic) {		
-			ordenar();
-		};
-		valores();
-	   desenha();
-	   
-	   		
-	} else {
-		alert("Problema! \nVerifique os dados!")
-   };
-
-};
-
-// detecta o click do usuário.
-
-function clique(evt) {
-  
-  var rectNav = canvas.getBoundingClientRect(); 
-  
-  //obtêm as coordenadas do mouse na janela do cliente.
-  pos = {
-    x: evt.clientX - rectNav.left,
-    y: evt.clientY - rectNav.top
-  };
- 
- marcar(); 
-
-};
-
-
-function cliqueDuplo(evt) {
-  
-  var rectNav = canvas.getBoundingClientRect(); 
-  
-  //obtêm as coordenadas do mouse na janela do cliente.
-  pos = {
-    x: evt.clientX - rectNav.left,
-    y: evt.clientY - rectNav.top
-  };
- 
- marcarCaixa(); 
-
-};
-
-function cliqueOrdenar(nome) {
-	
-	if (botao1Clic) {
-		nome.style.backgroundColor = "#8a9933" ;
-		botao1Clic = false;
-		
-	} else {
-		
-		nome.style.backgroundColor = "#a8a885";
-		botao1Clic = true;	
-	};
-
-
-};
-
-
-function cliqueMarca1(nome) {
-	
-	if (botao3Clic) {
-		nome.style.backgroundColor = "#8a9933" ;
-		botao3Clic = false;
-		corMarcaP = corMarca1P;
-		corMarca = corMarca1;
-		document.getElementById("botao4").style.backgroundColor = "#a8a885";
-		botao4Clic = true;
-	
-	} else {
-		
-		nome.style.backgroundColor = "#a8a885";
-		botao3Clic = true;
-					
-	};
-
-};
-
-
-function cliqueMarca2(nome) {
-	
-	if (botao4Clic) {
-		nome.style.backgroundColor = "#8a9933" ;
-		botao4Clic = false;
-		corMarcaP = corMarca2P;
-		corMarca = corMarca2;
-		document.getElementById("botao3").style.backgroundColor = "#a8a885";
-		botao3Clic = true;
-	
-	} else {
-		
-		nome.style.backgroundColor = "#a8a885";
-		botao4Clic = true;
-		corMarcaP = corMarca1P;
-		corMarca = corMarca1;
-			
-	};
-
-};
-
-function cliquePlay(nome) {
-	
-	audio1 = new Audio();
-	audio1.src = "audio/block1.wav";
-	
-	audio2 = new Audio();
-	audio2.src = "audio/block2.wav";
-	
-	if (botaoPlay) {
-		nome.style.backgroundColor = "#8a9933";
-		play();			
-		botaoPlay = false;
-				
-	} else {
-		nome.style.backgroundColor = "#a8a885";
-		play();		
-		botaoPlay = true;
-		
-		};
-
-};
-
-function play() {
-	if (botaoPlay) {
-		if (botaoAnd1 == false && botaoAnd2 == false && displayAnd1 > 1 && displayAnd2 > 1) {
-			
-			metro1 = setInterval(function() {
-				audio1.play();
-				} ,(60000/displayAnd1));
-							
-			metro2 = setInterval(function() {
-				audio2.play();	
-			} ,(60000/displayAnd2));
-		
-		} else if (botaoAnd1 == true && botaoAnd2 == false && displayAnd2 > 1) {
-		
-			metro2 = setInterval(function() {
-				audio2.play();	
-			} ,(60000/displayAnd2));
-			
-		} else if (botaoAnd1 == false && botaoAnd2 == true && displayAnd1 > 1) {
-		
-			metro1 = setInterval(function() {
-				audio1.play();
-			} ,(60000/displayAnd1));
-		
-		};
-		
-	} else {
-	
-		clearInterval(metro1);
-		clearInterval(metro2);
-		
-	};	
-
-};
-
-function cliqueAnd1(nome) {
-	
-	if (botaoAnd1) {
-		nome.style.backgroundColor = "#8a9933";
-		botaoAnd1 = false;
-	} else {
-		nome.style.backgroundColor = "#a8a885";
-		botaoAnd1 = true;
-		};
-
-};
-
-function cliqueAnd2(nome) {
-	
-	if (botaoAnd2) {
-		nome.style.backgroundColor = "#8a9933";
-		botaoAnd2 = false;
-	} else {
-		nome.style.backgroundColor = "#a8a885";
-		botaoAnd2 = true;
-		};
-
-};
-
-
-function isKeyPressed(event) {
-	
-    if (event.shiftKey) {
-        teclaShift = true;
-        teclaCtrl = false;
-    } else if (event.ctrlKey) {
-        teclaCtrl = true;
-        teclaShift = false;
-    } else {
-        teclaShift = false;
-        teclaCtrl = false;
-    };
+    // Constantes do círculo
+    const RAIO_CONEXAO = 450;
+    const RAIO_CAIXAS = 500;
+    const CENTRO_X = 1000;
+    const CENTRO_Y = 1000;
     
-}
+    // Variáveis de andamento
+    let andamentoP = 60, andamentoDif = 0.1;
+    let andamentoS11 = 2, andamentoS12 = 1;
+    let andamentoS21 = 3, andamentoS22 = 2;
+    let andamentoS31 = 5, andamentoS32 = 4;
+    let andamentoS41 = 7, andamentoS42 = 4;
+    
+    // Dados do gráfico
+    let caixas = { _cx: [] };
+    let aList = { _list: [] };
+    let criadoAnd = 0;
+    let totalAnd = 0;
+    let andMax = 300, andMin = 1;
+    let qtdAnd = 71;
+    
+    // Pontos de conexão
+    let pontosConexao = [];
+    
+    // Controles de marcação
+    let botao1Clic = true; // ordenar
+    let botao3Clic = true; // marca 1 (true = inativo)
+    let botao4Clic = true; // marca 2
+    let botaoPlay = true;
+    let botaoAnd1 = true;
+    let botaoAnd2 = true;
+    
+    // Cores das caixas não selecionadas
+    const corFundoCaixa = "#2D2B55";
+    const corCelulaPadraoT = "#403661";
+    const corCelulaPadrao = "#4A3F70";
+    const corTextoPadrao = "#E0D9F0";
 
-function salvarPresets(preset) {
-	
-		var nomeBt = "btPreset" + preset;	
-			
-		if (teclaShift) { // se shift+click botãoPreset, salva dados do preset na variável presetArray
-	
-		document.getElementById(nomeBt).style.backgroundColor = "#e8f036";
-		
-		presetArray[preset] = [];
-		
-		presetArray[preset][0] = preset; 
-		presetArray[preset][1] = document.getElementById("displayA").value;
-		presetArray[preset][2] = document.getElementById("displayB").value;
-		presetArray[preset][3] = document.getElementById("display1.1").value;
-		presetArray[preset][4] = document.getElementById("display1.2").value;
-		presetArray[preset][5] = document.getElementById("display2.1").value;
-		presetArray[preset][6] = document.getElementById("display2.2").value;
-		presetArray[preset][7] = document.getElementById("display3.1").value;
-		presetArray[preset][8] = document.getElementById("display3.2").value;
-		presetArray[preset][9] = document.getElementById("display4.1").value;
-		presetArray[preset][10] = document.getElementById("display4.2").value;
-				
-		} else if (teclaCtrl) {
-			
-			if (presetArray[preset]) {			
-				presetArray.splice(preset, 1, ""); 
-				};
-				
-				document.getElementById(nomeBt).style.backgroundColor = "#b1bcb5";
-			
-			};
-		
-		
-		if (presetArray[preset] && !teclaCtrl && !teclaShift) { // se existe um preset salvo, para o botão clicado, mostra os dados na tabela
-			
-			mostraDados(preset);
-
-			};
-		
-		if (!presetArray[preset] && !teclaCtrl && !teclaShift) {
-			
-			alert("Preset vazio ou não salvo!\nSalve os presets atuais e/ou\nabra um arquivo válido de presets.")
-			
-			};
-};
-
-function mostraDados(preset) {
-	
-			document.getElementById("displayA").value = presetArray[preset][1];
-			document.getElementById("displayB").value = presetArray[preset][2];
-			document.getElementById("display1.1").value = presetArray[preset][3]; 
-			document.getElementById("display1.2").value = presetArray[preset][4];
-			document.getElementById("display2.1").value = presetArray[preset][5];
-			document.getElementById("display2.2").value = presetArray[preset][6];
-			document.getElementById("display3.1").value = presetArray[preset][7];
-			document.getElementById("display3.2").value = presetArray[preset][8];
-			document.getElementById("display4.1").value = presetArray[preset][9];
-			document.getElementById("display4.2").value = presetArray[preset][10];
-			};
-
-function salvarArquivo() {
-	
-	
-	// cria string com presets
-     		
-     	presetDados = ""; 
-     		
-     	for (i=1;i<=16;i++) { // loop para concatenar linhas da string de presets
-			
-			var presetStr = "";     		
-			
-			if (presetArray[i]) {     		
-     		
-     			for (j=0;j<=10;j++) {      // loop para concatenar elementos de cada preset em uma linha da string
-     			
-     				presetStr =  presetStr + presetArray[i][j].toString() + " ";   	
-     			
-        		};
-        	
-        presetDados = presetDados + presetStr + "\n";
-        
-        	};
-         		
-      };
-	 	
-	 	var blob = new Blob([presetDados], {type: "text/plain;charset=utf-8"});
-		var nome = prompt("nome do arquivo");
-		saveAs(blob, nome + ".and");
-	
-};
-
-  function readSingleFile(evt) {
-  console.log(evt)
-    //Retrieve the first (and only!) File from the FileList object
-    var f = evt.target.files[0]; 
-
-    if (f) {
-      var r = new FileReader();
-      r.onload = function(e) { 
-	      var contents = e.target.result;
-         var setArray = contents.split("\n"); // separa presets
-         setArray.splice(setArray.length-1, 1);
-      
-      for (i=0;i<setArray.length;i++) {
-      	
-      	setArray[i] = setArray[i].split(" "); // separa elementos
-      	if ((setArray[i].length-1) == "") {
-				
-				  setArray[i].pop();    		
-      		
-      		}
-      	
-      	var indicePreset = setArray[i][0];
-      	presetArray[indicePreset] = setArray[i];  
-			
-      	};
-      
-      // exclui presets com mesmo índice
-        
-      for (i=(setArray.length - 1);i>=1;i--) {
-		
-			for (j=(i-1);j>=0;j--) {
-				
-				indicePreset = setArray[i][0];
-				
-				var indice2Preset = setArray[j][0];
-				var subtrai = presetArray[indicePreset][0] - presetArray[indice2Preset][0];
-			
-				if (subtrai == 0) {
-				
-					presetArray.splice(indice2Preset, 1); 
-				
-					i--;
-				
-					j = i - 1;
-				
-				};
-			
-			};
-		};
-		
-		for (i=1;i<=16;i++) {  // apaga cores dos botões
-			
-			var nomeBt = "btPreset" + i;			
-         document.getElementById(nomeBt).style.backgroundColor = "#a8a885";	
-			
-			};		
-		
-     	for (i=0;i<setArray.length;i++) {  //colore os botões com preset
-     		
-     		var nomeBt = "btPreset" + setArray[i][0];			
-         document.getElementById(nomeBt).style.backgroundColor = "#a5b741";			
-         			
-     		};
-     		
-     	// cria string com presets
-     		
-     	presetDados = ""; 
-     		
-     	for (i=0;i<setArray.length;i++) { // loop para concatenar linhas da string de presets
-			
-			indicePreset = setArray[i][0];
-			var presetStr = "";     		
-     		
-     		for (j=0;j<=10;j++) {      // loop para concatenar elementos de cada preset em uma linha da string
-     			presetStr =  presetStr + presetArray[indicePreset][j].toString() + " ";   	
-        	};
-        	
-         presetDados = presetDados + presetStr + "\n";
-         		
-         };
-      
-      }
-      r.readAsText(f);
-    } else { 
-      alert("Falha ao ler arquivo");
+    // Cores das marcações
+    const corMarca1 = "#331e2f";
+    const corMarca2 = "#0e3c4f";
+    const corMarcaAmbas = "#2c3b09";
+    
+    // Cores das conexões por quantidade de relações
+    const coresConexao = [
+        "#ea7ad4", // 1
+        "#ea7ac1", // 2
+        "#ea7aae", // 3
+        "#ea7a9c", // 4
+        "#ea7a89"  // 5
+    ];
+    
+    // Áudios Cowbell (polifônicos)
+    let audioBase1 = new Audio('Cowbell1.wav');
+    let audioBase2 = new Audio('Cowbell2.wav');
+    
+    // Pré-carregar
+    audioBase1.load();
+    audioBase2.load();
+    
+    // Metrônomo
+    let displayAnd1 = 0, displayAnd2 = 0;
+    let metro1 = null;
+    let metro2 = null;
+    
+    // Presets
+    let teclaShift = false, teclaCtrl = false;
+    let presetArray = [];
+    
+    // Variáveis de marcação
+    let celulasAtivas = []; // Array de { indiceCaixa, campo, cor (1 ou 2) }
+    let marcaAtual = 1; // 1 = vermelho, 2 = amarelo
+    
+    // ==================== FUNÇÕES DE ÁUDIO ====================
+    function playCowbell1() {
+        const audio = audioBase1.cloneNode();
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log('Áudio bloqueado até interação'));
     }
-  }
+    
+    function playCowbell2() {
+        const audio = audioBase2.cloneNode();
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log('Áudio bloqueado até interação'));
+    }
+    
+    // ==================== INICIALIZAÇÃO DO CANVAS ====================
+    function initCanvas() {
+        container = document.getElementById('canvasContainer');
+        canvas = document.getElementById('mainCanvas');
+        
+        ctx = canvas.getContext('2d');
+        canvas.width = LARGURA;
+        canvas.height = ALTURA;
+        
+        setTimeout(() => {
+            resetView();
+        }, 100);
+        
+        canvas.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('mouseup', stopDrag);
+        canvas.addEventListener('wheel', handleWheel, { passive: false });
+        canvas.addEventListener('click', clique);
+        
+        // Inicializa áudio na primeira interação
+        document.addEventListener('click', function initAudioOnFirstClick() {
+            // Toca um som mudo para ativar o áudio
+            const silent = new Audio();
+            silent.volume = 0;
+            silent.play().then(() => {
+                console.log('Áudio ativado');
+            }).catch(() => {});
+            document.removeEventListener('click', initAudioOnFirstClick);
+        }, { once: true });
+    }
+    
+    function applyTransform() {
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    }
+    
+    // ==================== ZOOM E PAN ====================
+    function zoomIn() {
+        scale *= 1.2;
+        if (scale > 2) scale = 2;
+        applyTransform();
+        desenha();
+    }
+    
+    function zoomOut() {
+        scale /= 1.2;
+        if (scale < 0.3) scale = 0.3;
+        applyTransform();
+        desenha();
+    }
+    
+    function resetView() {
+        scale = 0.45;
+        const containerRect = container.getBoundingClientRect();
+        offsetX = (containerRect.width / 2) - (CENTRO_X * scale) + 50;
+        offsetY = (containerRect.height / 2) - (CENTRO_Y * scale) + 50;
+        applyTransform();
+        desenha();
+    }
+    
+    function handleWheel(e) {
+        e.preventDefault();
+        scale *= e.deltaY > 0 ? 0.9 : 1.1;
+        if (scale < 0.25) scale = 0.25;
+        if (scale > 2.5) scale = 2.5;
+        applyTransform();
+        desenha();
+    }
+    
+    function startDrag(e) {
+        if (e.button !== 0) return;
+        isDragging = true;
+        dragStartX = e.clientX - offsetX;
+        dragStartY = e.clientY - offsetY;
+        canvas.style.cursor = 'grabbing';
+    }
+    
+    function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        offsetX = e.clientX - dragStartX;
+        offsetY = e.clientY - dragStartY;
+        applyTransform();
+    }
+    
+    function stopDrag() {
+        isDragging = false;
+        canvas.style.cursor = 'grab';
+    }
+    
+    function getCanvasCoords(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (clientX - rect.left) / scale,
+            y: (clientY - rect.top) / scale
+        };
+    }
+    
+    // ==================== LÓGICA PRINCIPAL ====================
+    function reconfigura() {
+        caixas = { _cx: [] };
+        aList = { _list: [] };
+        pontosConexao = [];
+        criadoAnd = 0;
+        celulasAtivas = [];
+    }
+    
+    function andamentos() {
+        aList._list[0] = {
+            aP: andamentoP,
+            a1: andamentoP * (andamentoS11 / andamentoS12),
+            a2: andamentoP * (andamentoS21 / andamentoS22),
+            a3: andamentoP * (andamentoS31 / andamentoS32),
+            a4: andamentoP * (andamentoS41 / andamentoS42)
+        };
+        
+        for (let j = 0; j < 500; j++) {
+            if (criadoAnd >= qtdAnd) break;
+            
+            for (let k = 1; k <= 4; k++) {
+                if (criadoAnd >= qtdAnd) break;
+                criadoAnd++;
+                aList._list[criadoAnd] = {
+                    aP: aList._list[j][`a${k}`],
+                    a1: aList._list[j][`a${k}`] * (andamentoS11 / andamentoS12),
+                    a2: aList._list[j][`a${k}`] * (andamentoS21 / andamentoS22),
+                    a3: aList._list[j][`a${k}`] * (andamentoS31 / andamentoS32),
+                    a4: aList._list[j][`a${k}`] * (andamentoS41 / andamentoS42)
+                };
+            }
+        }
+        totalAnd = aList._list.length - 1;
+    }
+    
+    function excluiIguais() {
+        for (let i = 1; i <= criadoAnd; i++) {
+            for (let j = 0; j < i; j++) {
+                if (Math.abs(aList._list[i].aP - aList._list[j].aP) <= andamentoDif || 
+                    aList._list[i].aP > andMax || 
+                    aList._list[i].aP < andMin || 
+                    i >= qtdAnd) {
+                    aList._list.splice(i, 1);
+                    i--;
+                    criadoAnd--;
+                    j = i;
+                }
+            }
+        }
+        totalAnd = aList._list.length - 1;
+    }
+    
+    function ordenar() {
+        for (let i = 0; i < totalAnd; i++) {
+            if (aList._list[i].aP > aList._list[i + 1].aP) {
+                [aList._list[i], aList._list[i + 1]] = [aList._list[i + 1], aList._list[i]];
+                i = -1;
+            }
+        }
+    }
+    
+    // ==================== CRIAÇÃO DAS CAIXAS ====================
+    function criarCaixas() {
+        const total = aList._list.length;
+        const altCel = 15, largCel = 46;
+        
+        for (let i = 0; i < total; i++) {
+            const angulo = (i / total) * 2 * Math.PI - Math.PI / 2;
+            
+            const pontoX = CENTRO_X + RAIO_CONEXAO * Math.cos(angulo);
+            const pontoY = CENTRO_Y + RAIO_CONEXAO * Math.sin(angulo);
+            
+            pontosConexao.push({ x: pontoX, y: pontoY, indice: i });
+            
+            const caixaX = CENTRO_X + RAIO_CAIXAS * Math.cos(angulo) - (largCel + 4) / 2;
+            const caixaY = CENTRO_Y + RAIO_CAIXAS * Math.sin(angulo) - (((altCel + 2) * 5) + 2) / 2;
+            
+            caixas._cx[i] = {
+                fundo: {
+                    x: caixaX, y: caixaY,
+                    altura: ((altCel + 2) * 5) + 2,
+                    largura: largCel + 4,
+                    cor: corFundoCaixa
+                },
+                andP: { x: caixaX + 2, y: caixaY + 2, altura: altCel, largura: largCel, cor: corCelulaPadraoT, valor: aList._list[i].aP },
+                and1: { x: caixaX + 2, y: caixaY + 4 + altCel, altura: altCel, largura: largCel, cor: corCelulaPadrao, valor: aList._list[i].a1 },
+                and2: { x: caixaX + 2, y: caixaY + 2 + ((altCel + 2) * 2), altura: altCel, largura: largCel, cor: corCelulaPadrao, valor: aList._list[i].a2 },
+                and3: { x: caixaX + 2, y: caixaY + 2 + ((altCel + 2) * 3), altura: altCel, largura: largCel, cor: corCelulaPadrao, valor: aList._list[i].a3 },
+                and4: { x: caixaX + 2, y: caixaY + 2 + ((altCel + 2) * 4), altura: altCel, largura: largCel, cor: corCelulaPadrao, valor: aList._list[i].a4 },
+                pontoConexao: { x: pontoX, y: pontoY },
+                angulo: angulo,
+                indice: i
+            };
+        }
+    }
+    
+    // ==================== FUNÇÕES DE MARCAÇÃO ====================
+    function limparTodasMarcacoes() {
+        celulasAtivas = [];
+        desenha();
+    }
 
-  document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+    function toggleCelula(indiceCaixa, campo) {
+        // Verifica se já existe marcação para esta célula com a cor ATUAL
+        const indexExistente = celulasAtivas.findIndex(c =>
+            c.indiceCaixa === indiceCaixa &&
+            c.campo === campo &&
+            c.cor === marcaAtual
+        );
 
-// escuta cliques
-canvas.addEventListener("click", clique);
-canvas.addEventListener("dblclick", cliqueDuplo);
+        if (indexExistente >= 0) {
+            // Se já existe com a cor atual, remove APENAS esta cor
+            celulasAtivas.splice(indexExistente, 1);
+        } else {
+            // Se não existe com a cor atual, adiciona
+            celulasAtivas.push({
+                indiceCaixa,
+                campo,
+                cor: marcaAtual
+            });
+        }
 
+        desenha();
+    }
 
+    function getCorCelulaAtiva(indiceCaixa, campo) {
+        // Pega TODAS as marcações desta célula
+        const marcacoes = celulasAtivas.filter(c =>
+            c.indiceCaixa === indiceCaixa && c.campo === campo
+        );
 
+        if (marcacoes.length === 0) return null;
+
+        // Verifica se tem ambas as cores
+        const temMarca1 = marcacoes.some(c => c.cor === 1);
+        const temMarca2 = marcacoes.some(c => c.cor === 2);
+
+        if (temMarca1 && temMarca2) {
+            return corMarcaAmbas; // Laranja
+        }
+
+        // Se tem só uma, retorna a cor correspondente
+        if (temMarca1) return corMarca1;
+        return corMarca2;
+    }
+    
+    function celulaEstaAtiva(indiceCaixa, campo) {
+        return celulasAtivas.some(c => c.indiceCaixa === indiceCaixa && c.campo === campo);
+    }
+    
+    function valorTemRelacaoComAtivos(valor) {
+        const multiplos = [0.25, 0.5, 1, 2, 4];
+        
+        for (let celula of celulasAtivas) {
+            const caixa = caixas._cx[celula.indiceCaixa];
+            if (!caixa) continue;
+            
+            const valorAtivo = parseFloat(caixa[celula.campo].valor);
+            
+            for (let mult of multiplos) {
+                if (Math.abs(valor - valorAtivo * mult) <= andamentoDif ||
+                    Math.abs(valorAtivo - valor * mult) <= andamentoDif) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    // ==================== DETECÇÃO DE OBSTÁCULOS ====================
+    function linhaInterceptaCaixa(x1, y1, x2, y2, caixa) {
+        const buffer = 15;
+        const caixaEsq = caixa.fundo.x - buffer;
+        const caixaDir = caixa.fundo.x + caixa.fundo.largura + buffer;
+        const caixaTop = caixa.fundo.y - buffer;
+        const caixaBot = caixa.fundo.y + caixa.fundo.altura + buffer;
+        
+        for (let t = 0; t <= 20; t++) {
+            const tx = x1 + (x2 - x1) * (t / 20);
+            const ty = y1 + (y2 - y1) * (t / 20);
+            if (tx >= caixaEsq && tx <= caixaDir && ty >= caixaTop && ty <= caixaBot) return true;
+        }
+        return false;
+    }
+    
+    function encontrarPontoDesvio(x1, y1, x2, y2, obstaculos) {
+        const medioX = (x1 + x2) / 2;
+        const medioY = (y1 + y2) / 2;
+        
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const perpX = -dy;
+        const perpY = dx;
+        const comp = Math.hypot(perpX, perpY);
+        const normX = perpX / comp;
+        const normY = perpY / comp;
+        
+        let distanciaDesvio = 50;
+        for (let obs of obstaculos) {
+            const dist = Math.hypot(medioX - obs.x, medioY - obs.y);
+            if (dist < 100) distanciaDesvio = Math.max(distanciaDesvio, 80 - dist);
+        }
+        
+        return { x: medioX + normX * distanciaDesvio, y: medioY + normY * distanciaDesvio };
+    }
+
+    // ==================== DESENHO DAS CONEXÕES ====================
+    function desenharConexoes(ativasApenas = false) {
+        const total = caixas._cx.length;
+        if (total < 2) return;
+
+        const multiplos = [0.25, 0.5, 1, 2, 4];
+        const corInativa = "#4A4A6A"; // Cinza azulado suave para conexões inativas
+
+        for (let i = 0; i < total; i++) {
+            for (let j = i + 1; j < total; j++) {
+                const caixaA = caixas._cx[i];
+                const caixaB = caixas._cx[j];
+
+                const x1 = caixaA.pontoConexao.x;
+                const y1 = caixaA.pontoConexao.y;
+                const x2 = caixaB.pontoConexao.x;
+                const y2 = caixaB.pontoConexao.y;
+
+                // Conta relações
+                let countRelacoes = 0;
+                let countAtivas = 0;
+
+                const campos = ['andP', 'and1', 'and2', 'and3', 'and4'];
+
+                for (const campoA of campos) {
+                    for (const campoB of campos) {
+                        const valA = parseFloat(caixaA[campoA].valor);
+                        const valB = parseFloat(caixaB[campoB].valor);
+
+                        if (valA > 0 && valB > 0) {
+                            const relacao = valB / valA;
+
+                            for (const mult of multiplos) {
+                                if (Math.abs(relacao - mult) < 0.01) {
+                                    countRelacoes++;
+
+                                    const valAAtivo = celulasAtivas.some(c =>
+                                        c.indiceCaixa === i && c.campo === campoA);
+                                    const valBAtivo = celulasAtivas.some(c =>
+                                        c.indiceCaixa === j && c.campo === campoB);
+
+                                    if (valAAtivo || valBAtivo) {
+                                        countAtivas++;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                const temAtiva = countAtivas > 0;
+
+                if (ativasApenas && !temAtiva) continue;
+                if (!ativasApenas && temAtiva) continue;
+
+                if (countRelacoes > 0) {
+                    // Define cor e opacidade baseado no tipo de conexão
+                    let corLinha, opacidade;
+
+                    if (ativasApenas) {
+                        // Conexões ativas: usam a paleta gradiente
+                        const indiceCor = Math.min(countRelacoes - 1, 4);
+                        corLinha = coresConexao[indiceCor];
+                        opacidade = 1.0;
+                    } else {
+                        // Conexões inativas: usam cor única
+                        corLinha = corInativa;
+                        opacidade = 0.4;
+                    }
+
+                    const espessuraBase = Math.min(0.5 + countRelacoes * 0.3, 3);
+
+                    const obstaculos = [];
+                    for (let k = 0; k < total; k++) {
+                        if (k !== i && k !== j) {
+                            obstaculos.push({
+                                x: caixas._cx[k].pontoConexao.x,
+                                y: caixas._cx[k].pontoConexao.y,
+                                caixa: caixas._cx[k]
+                            });
+                        }
+                    }
+
+                    const obstaculosNoCaminho = obstaculos.filter(obs =>
+                        linhaInterceptaCaixa(x1, y1, x2, y2, obs.caixa)
+                    );
+
+                    let pontoDesvio = null;
+                    if (obstaculosNoCaminho.length > 0) {
+                        pontoDesvio = encontrarPontoDesvio(x1, y1, x2, y2, obstaculosNoCaminho);
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = opacidade;
+                    ctx.lineWidth = espessuraBase;
+                    ctx.strokeStyle = corLinha;
+
+                    if (pontoDesvio) {
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.quadraticCurveTo(pontoDesvio.x, pontoDesvio.y, x2, y2);
+                        ctx.stroke();
+                    } else {
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+            }
+        }
+    }
+    
+    function desenha() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Círculos guia
+        ctx.beginPath();
+        ctx.arc(CENTRO_X, CENTRO_Y, RAIO_CONEXAO, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#3D2A5F";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 5]);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.arc(CENTRO_X, CENTRO_Y, RAIO_CAIXAS, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#2D2B55";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([]);
+        ctx.stroke();
+        
+        // Primeiro camada: conexões inativas
+        desenharConexoes(false);
+        
+        // Pontos de conexão
+        ctx.fillStyle = "#9F7AEA";
+        for (let ponto of pontosConexao) {
+            ctx.beginPath();
+            ctx.arc(ponto.x, ponto.y, 3, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // Desenha caixas
+        for (let i = 0; i < caixas._cx.length; i++) {
+            const c = caixas._cx[i];
+
+            ctx.fillStyle = c.fundo.cor;
+            ctx.fillRect(c.fundo.x, c.fundo.y, c.fundo.largura, c.fundo.altura);
+
+            const cells = [c.andP, c.and1, c.and2, c.and3, c.and4];
+            const cellNames = ['andP', 'and1', 'and2', 'and3', 'and4'];
+
+            for (let j = 0; j < 5; j++) {
+                const cell = cells[j];
+                const cellName = cellNames[j];
+
+                // Verifica se esta célula está diretamente ativa (clicada)
+                const celulaAtiva = celulaEstaAtiva(i, cellName);
+
+                // Acumula cores de todas as relações com células ativas
+                const coresRelacionadas = new Set(); // 1 = vermelho, 2 = amarelo
+
+                if (!celulaAtiva) {
+                    // Verifica relações com TODAS as células ativas
+                    for (let celulaAtiva of celulasAtivas) {
+                        const caixaOrigem = caixas._cx[celulaAtiva.indiceCaixa];
+                        if (!caixaOrigem) continue;
+
+                        const valorOrigem = parseFloat(caixaOrigem[celulaAtiva.campo].valor);
+
+                        // Verifica se este valor tem relação com o valor da célula atual
+                        const multiplos = [0.25, 0.5, 1, 2, 4];
+                        for (let mult of multiplos) {
+                            if (Math.abs(cell.valor - valorOrigem * mult) <= andamentoDif ||
+                                Math.abs(valorOrigem - cell.valor * mult) <= andamentoDif) {
+                                coresRelacionadas.add(celulaAtiva.cor);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Decide a cor baseada no estado da célula
+                if (celulaAtiva) {
+                    // Célula clicada diretamente
+                    ctx.fillStyle = getCorCelulaAtiva(i, cellName);
+                } else if (coresRelacionadas.size > 0) {
+                    // Célula relacionada a células ativas
+                    if (coresRelacionadas.has(1) && coresRelacionadas.has(2)) {
+                        ctx.fillStyle = corMarcaAmbas; // Laranja (ambas marcações)
+                    } else if (coresRelacionadas.has(1)) {
+                        ctx.fillStyle = corMarca1; // Vermelho (só Marca 1)
+                    } else if (coresRelacionadas.has(2)) {
+                        ctx.fillStyle = corMarca2; // Amarelo (só Marca 2)
+                    }
+                } else {
+                    // Célula sem relação com marcações
+                    ctx.fillStyle = cell.cor; // Cor original
+                }
+
+                ctx.fillRect(cell.x, cell.y, cell.largura, cell.altura);
+            }
+
+            // Textos (mantido igual)
+            ctx.fillStyle = corTextoPadrao;
+
+            const textos = [
+                c.andP.valor.toFixed(2),
+                c.and1.valor.toFixed(2),
+                c.and2.valor.toFixed(2),
+                c.and3.valor.toFixed(2),
+                c.and4.valor.toFixed(2)
+            ];
+
+            for (let j = 0; j < 5; j++) {
+                const txt = textos[j].toString();
+                const cell = cells[j];
+
+                if (j === 0) {
+                    ctx.font = "bold 10px system-ui, monospace";
+                } else {
+                    ctx.font = "10px system-ui, monospace";
+                }
+
+                ctx.fillText(txt, cell.x + (cell.largura / 2) - (txt.length * 3), cell.y + 11);
+            }
+        }
+        
+        // Segunda camada: conexões ativas
+        desenharConexoes(true);
+    }
+    
+    // ==================== INTERAÇÃO ====================
+    function clique(evt) {
+        const pos = getCanvasCoords(evt.clientX, evt.clientY);
+        
+        const marcaAtiva = !botao3Clic || !botao4Clic;
+        if (!marcaAtiva) {
+            alert("Ative a Marca 1 ou Marca 2 para marcar células!");
+            return;
+        }
+        
+        if (!botao3Clic) marcaAtual = 1;
+        else if (!botao4Clic) marcaAtual = 2;
+        
+        for (let index = 0; index < caixas._cx.length; index++) {
+            const c = caixas._cx[index];
+            const cells = ['andP', 'and1', 'and2', 'and3', 'and4'];
+            
+            for (const cellName of cells) {
+                const cell = c[cellName];
+                if (pos.x > cell.x && pos.x < cell.x + cell.largura &&
+                    pos.y > cell.y && pos.y < cell.y + cell.altura) {
+                    
+                    toggleCelula(index, cellName);
+                    
+                    if (!botaoAnd1) displayAnd1 = cell.valor;
+                    if (!botaoAnd2) displayAnd2 = cell.valor;
+                    
+                    document.getElementById("display5.1").value = displayAnd1.toFixed(2);
+                    document.getElementById("display5.2").value = displayAnd2.toFixed(2);
+                    document.getElementById("display6.1").value = Math.round(60000 / displayAnd1);
+                    document.getElementById("display6.2").value = Math.round(60000 / displayAnd2);
+                    
+                    return;
+                }
+            }
+        }
+    }
+    
+    // ==================== FUNÇÕES DE CONTROLE ====================
+    function iniGrafico() {
+        andamentoP = parseFloat(document.getElementById("displayA").value) || 60;
+        andamentoDif = parseFloat(document.getElementById("displayB").value) || 0.1;
+        andamentoS11 = parseFloat(document.getElementById("display1.1").value) || 2;
+        andamentoS12 = parseFloat(document.getElementById("display1.2").value) || 1;
+        andamentoS21 = parseFloat(document.getElementById("display2.1").value) || 3;
+        andamentoS22 = parseFloat(document.getElementById("display2.2").value) || 2;
+        andamentoS31 = parseFloat(document.getElementById("display3.1").value) || 5;
+        andamentoS32 = parseFloat(document.getElementById("display3.2").value) || 4;
+        andamentoS41 = parseFloat(document.getElementById("display4.1").value) || 7;
+        andamentoS42 = parseFloat(document.getElementById("display4.2").value) || 4;
+        
+        reconfigura();
+        andamentos();
+        excluiIguais();
+        
+        if (!botao1Clic) ordenar();
+        
+        criarCaixas();
+        desenha();
+        setTimeout(resetView, 50);
+    }
+    
+    function toggleOrdenar(btn) {
+        botao1Clic = !botao1Clic;
+        btn.classList.toggle('active', !botao1Clic);
+    }
+    
+    function toggleMarca1(btn) {
+        botao3Clic = !botao3Clic;
+        btn.classList.toggle('active', !botao3Clic);
+        if (!botao3Clic) {
+            botao4Clic = true;
+            document.getElementById("botao4").classList.remove('active');
+            marcaAtual = 1;
+        }
+    }
+    
+    function toggleMarca2(btn) {
+        botao4Clic = !botao4Clic;
+        btn.classList.toggle('active', !botao4Clic);
+        if (!botao4Clic) {
+            botao3Clic = true;
+            document.getElementById("botao3").classList.remove('active');
+            marcaAtual = 2;
+        }
+    }
+    
+    function togglePlay(btn) {
+        botaoPlay = !botaoPlay;
+        btn.classList.toggle('active', !botaoPlay);
+        
+        if (!botaoPlay) {
+            if (!botaoAnd1 && displayAnd1 > 1) {
+                metro1 = setInterval(playCowbell1, 60000 / displayAnd1);
+            }
+            if (!botaoAnd2 && displayAnd2 > 1) {
+                metro2 = setInterval(playCowbell2, 60000 / displayAnd2);
+            }
+        } else {
+            if (metro1) clearInterval(metro1);
+            if (metro2) clearInterval(metro2);
+        }
+    }
+    
+    function toggleAnd1(btn) {
+        botaoAnd1 = !botaoAnd1;
+        btn.classList.toggle('active', !botaoAnd1);
+    }
+    
+    function toggleAnd2(btn) {
+        botaoAnd2 = !botaoAnd2;
+        btn.classList.toggle('active', !botaoAnd2);
+    }
+    
+    // ==================== PRESETS ====================
+    function isKeyPressed(event) {
+        teclaShift = event.shiftKey;
+        teclaCtrl = event.ctrlKey;
+    }
+    
+    function salvarPresets(preset) {
+        const btn = document.getElementById(`btPreset${preset}`);
+        
+        if (teclaShift) {
+            presetArray[preset] = [
+                preset,
+                document.getElementById("displayA").value,
+                document.getElementById("displayB").value,
+                document.getElementById("display1.1").value,
+                document.getElementById("display1.2").value,
+                document.getElementById("display2.1").value,
+                document.getElementById("display2.2").value,
+                document.getElementById("display3.1").value,
+                document.getElementById("display3.2").value,
+                document.getElementById("display4.1").value,
+                document.getElementById("display4.2").value
+            ];
+            btn.classList.add('active');
+        } else if (teclaCtrl) {
+            delete presetArray[preset];
+            btn.classList.remove('active');
+        } else if (presetArray[preset]) {
+            document.getElementById("displayA").value = presetArray[preset][1];
+            document.getElementById("displayB").value = presetArray[preset][2];
+            document.getElementById("display1.1").value = presetArray[preset][3];
+            document.getElementById("display1.2").value = presetArray[preset][4];
+            document.getElementById("display2.1").value = presetArray[preset][5];
+            document.getElementById("display2.2").value = presetArray[preset][6];
+            document.getElementById("display3.1").value = presetArray[preset][7];
+            document.getElementById("display3.2").value = presetArray[preset][8];
+            document.getElementById("display4.1").value = presetArray[preset][9];
+            document.getElementById("display4.2").value = presetArray[preset][10];
+        } else {
+            alert("Preset vazio!");
+        }
+    }
+    
+    function salvarArquivo() {
+        let presetDados = "";
+        for (let i = 1; i <= 16; i++) {
+            if (presetArray[i]) {
+                presetDados += presetArray[i].join(" ") + "\n";
+            }
+        }
+        const blob = new Blob([presetDados], { type: "text/plain;charset=utf-8" });
+        const nome = prompt("Nome do arquivo:", "presets");
+        if (nome) saveAs(blob, nome + ".and");
+    }
+    
+    function readSingleFile(evt) {
+        const f = evt.target.files[0];
+        if (!f) return;
+        
+        const r = new FileReader();
+        r.onload = function(e) {
+            const lines = e.target.result.split("\n");
+            for (let line of lines) {
+                if (line.trim() === "") continue;
+                const parts = line.trim().split(" ");
+                if (parts.length >= 11) {
+                    const preset = parseInt(parts[0]);
+                    if (preset >= 1 && preset <= 16) {
+                        presetArray[preset] = parts;
+                        document.getElementById(`btPreset${preset}`).classList.add('active');
+                    }
+                }
+            }
+        };
+        r.readAsText(f);
+    }
+    
+    // ==================== INICIALIZAÇÃO ====================
+    window.onload = function() {
+        initCanvas();
+        document.getElementById('fileinput').addEventListener('change', readSingleFile);
+        iniGrafico();
+    };
 </script>
-
 
 </body>
 </html>
