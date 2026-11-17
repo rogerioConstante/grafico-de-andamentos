@@ -608,13 +608,8 @@
         "#ea7a89"  // 5
     ];
     
-    // Áudios Cowbell (polifônicos)
-    let audioBase1 = new Audio('Cowbell1.wav');
-    let audioBase2 = new Audio('Cowbell2.wav');
-    
-    // Pré-carregar
-    audioBase1.load();
-    audioBase2.load();
+    // Som do metrônomo: cowbells sintetizados (Web Audio), sem arquivos de áudio
+    let audioCtx = null;
     
     // Metrônomo
     let displayAnd1 = 0, displayAnd2 = 0;
@@ -630,17 +625,45 @@
     let marcaAtual = 1; // 1 = vermelho, 2 = amarelo
     
     // ==================== FUNÇÕES DE ÁUDIO ====================
-    function playCowbell1() {
-        const audio = audioBase1.cloneNode();
-        audio.volume = 0.3;
-        audio.play().catch(e => console.log('Áudio bloqueado até interação'));
+    // O navegador só libera o áudio após um clique: o contexto é criado/retomado no Play.
+    function obterAudioCtx() {
+        if (!audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            audioCtx = new AC();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
     }
-    
-    function playCowbell2() {
-        const audio = audioBase2.cloneNode();
-        audio.volume = 0.3;
-        audio.play().catch(e => console.log('Áudio bloqueado até interação'));
+
+    // Cowbell clássico: duas ondas quadradas em um filtro passa-banda, com decaimento rápido.
+    function tocarCowbell(freq1, freq2, freqFiltro, decaimento, volume) {
+        const ac = obterAudioCtx();
+        if (!ac) return;
+        const t = ac.currentTime;
+        const ganho = ac.createGain();
+        ganho.gain.setValueAtTime(0.0001, t);
+        ganho.gain.exponentialRampToValueAtTime(volume, t + 0.002);
+        ganho.gain.exponentialRampToValueAtTime(0.0001, t + decaimento);
+        const filtro = ac.createBiquadFilter();
+        filtro.type = 'bandpass';
+        filtro.frequency.value = freqFiltro;
+        filtro.Q.value = 1.5;
+        filtro.connect(ganho);
+        ganho.connect(ac.destination);
+        for (const f of [freq1, freq2]) {
+            const osc = ac.createOscillator();
+            osc.type = 'square';
+            osc.frequency.value = f;
+            osc.connect(filtro);
+            osc.start(t);
+            osc.stop(t + decaimento + 0.02);
+        }
     }
+
+    // Andamento 1: cowbell grave; andamento 2: cowbell agudo e mais seco.
+    function playCowbell1() { tocarCowbell(667, 985, 1250, 0.18, 0.3); }
+    function playCowbell2() { tocarCowbell(1540, 2280, 2900, 0.11, 0.3); }
     
     // ==================== INICIALIZAÇÃO DO CANVAS ====================
     function initCanvas() {
@@ -1271,8 +1294,9 @@
     function togglePlay(btn) {
         botaoPlay = !botaoPlay;
         btn.classList.toggle('active', !botaoPlay);
-        
+
         if (!botaoPlay) {
+            obterAudioCtx(); // libera o áudio dentro do clique
             if (!botaoAnd1 && displayAnd1 > 1) {
                 metro1 = setInterval(playCowbell1, 60000 / displayAnd1);
             }
